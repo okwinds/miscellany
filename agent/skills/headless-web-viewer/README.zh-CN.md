@@ -38,6 +38,12 @@ npm ci
 
 ### 方式 C：用 openskills 从 GitHub/Git 安装
 
+先准备 openskills：
+
+- 需要 Node.js（建议 18+）。
+- 不想安装：直接用 `npx openskills ...`（会自动下载并运行）。
+- 想全局安装：`npm i -g openskills`（或 `pnpm add -g openskills`）。
+
 用 `openskills install` 指向本仓库的 GitHub 地址（或任意 Git URL），在交互界面选择要安装的 skill：
 
 ```bash

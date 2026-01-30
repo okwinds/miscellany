@@ -35,6 +35,12 @@ ln -s "$(pwd)/agent/skills/repo-deep-dive-report" "$SKILLS_DIR/repo-deep-dive-re
 
 ### Option C: install from GitHub/Git via openskills
 
+Prereqs for openskills:
+
+- Requires Node.js (18+ recommended).
+- No install needed if you use `npx openskills ...` (it will download and run).
+- Optional global install: `npm i -g openskills` (or `pnpm add -g openskills`).
+
 Use `openskills install` with this repo’s GitHub URL (or any Git URL), then select which skill(s) to install:
 
 ```bash

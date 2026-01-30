@@ -41,11 +41,13 @@ ln -s "$(pwd)/agent/skills/repo-deep-dive-report" "$SKILLS_DIR/repo-deep-dive-re
 npx openskills install <git-url>
 ```
 
-例如（本仓库）：
+例如（本仓库；注意：这里是**仓库 URL**，不是 GitHub 的 `.../tree/...` 子目录链接）：
 
 ```bash
 npx openskills install https://github.com/okwinds/miscellany
 ```
+
+安装时在列表里选择 `repo-deep-dive-report`（其在仓库内的路径是 `agent/skills/repo-deep-dive-report`）。
 
 常用选项：
 - `-g`：全局安装

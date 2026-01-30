@@ -41,11 +41,13 @@ Use `openskills install` with this repo’s GitHub URL (or any Git URL), then se
 npx openskills install <git-url>
 ```
 
-Example (this repo):
+Example (this repo; note: use a cloneable **repo URL**, not a GitHub `.../tree/...` subdirectory link):
 
 ```bash
 npx openskills install https://github.com/okwinds/miscellany
 ```
+
+When prompted, select `repo-deep-dive-report` (repo path: `agent/skills/repo-deep-dive-report`).
 
 Common options:
 - `-g`: install globally

@@ -9,6 +9,35 @@ An end-to-end “read the repo” workflow that produces an evidence-based revie
 - `scripts/repo_snapshot.py`: generate a lightweight repo snapshot (stdlib-only)
 - `scripts/render_md_to_html.py`: convert Markdown report to offline HTML (stdlib-only)
 
+## Install into Codex / Claude Code
+
+> This folder is the “skill package”. Installing it simply means placing the whole directory (including `SKILL.md`) into your tool’s `skills/` directory, keeping the folder name unchanged.
+
+### Option A: copy (recommended)
+
+From this repo root (pick one: `~/.codex/skills` or `~/.claude/skills`):
+
+```bash
+SKILLS_DIR=~/.codex/skills   # or ~/.claude/skills
+mkdir -p "$SKILLS_DIR"
+rm -rf "$SKILLS_DIR/repo-deep-dive-report"
+cp -R agent/skills/repo-deep-dive-report "$SKILLS_DIR/repo-deep-dive-report"
+```
+
+### Option B: symlink (best for development)
+
+```bash
+SKILLS_DIR=~/.codex/skills   # or ~/.claude/skills
+mkdir -p "$SKILLS_DIR"
+rm -rf "$SKILLS_DIR/repo-deep-dive-report"
+ln -s "$(pwd)/agent/skills/repo-deep-dive-report" "$SKILLS_DIR/repo-deep-dive-report"
+```
+
+### After install
+
+- Restart / open a new Codex or Claude Code session so it re-scans skills.
+- Then ask for it in natural language, e.g. “produce a deep-dive repo review report (MD + HTML) following repo-deep-dive-report”.
+
 ## Suggested usage
 
 1) Create a repo snapshot:
@@ -32,4 +61,3 @@ python3 agent/skills/repo-deep-dive-report/scripts/render_md_to_html.py \
 
 - Both scripts are stdlib-only (no extra Python dependencies).
 - Mermaid code blocks are preserved as code fences by default (offline-friendly).
-

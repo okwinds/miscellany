@@ -9,34 +9,63 @@ An end-to-end “read the repo” workflow that produces an evidence-based revie
 - `scripts/repo_snapshot.py`: generate a lightweight repo snapshot (stdlib-only)
 - `scripts/render_md_to_html.py`: convert Markdown report to offline HTML (stdlib-only)
 
-## Install into Codex / Claude Code
+## Installation
 
-> This folder is the “skill package”. Installing it simply means placing the whole directory (including `SKILL.md`) into your tool’s `skills/` directory, keeping the folder name unchanged.
+> This folder is the “skill package”. Installing it means your coding tool/agent runner can discover the `SKILL.md` inside it (commonly by placing the directory into a `skills/` folder, or by using the tool’s “install from Git” feature).
 
-### Option A: copy (recommended)
+### Option A: copy
 
-From this repo root (pick one: `~/.codex/skills` or `~/.claude/skills`):
+From this repo root, set `SKILLS_DIR` to whatever skills folder your tool scans (e.g. `~/.codex/skills`, `~/.claude/skills`, `~/.config/opencode/skills`, etc):
 
 ```bash
-SKILLS_DIR=~/.codex/skills   # or ~/.claude/skills
+SKILLS_DIR=~/.codex/skills
 mkdir -p "$SKILLS_DIR"
 rm -rf "$SKILLS_DIR/repo-deep-dive-report"
 cp -R agent/skills/repo-deep-dive-report "$SKILLS_DIR/repo-deep-dive-report"
 ```
 
-### Option B: symlink (best for development)
+### Option B: symlink
 
 ```bash
-SKILLS_DIR=~/.codex/skills   # or ~/.claude/skills
+SKILLS_DIR=~/.codex/skills
 mkdir -p "$SKILLS_DIR"
 rm -rf "$SKILLS_DIR/repo-deep-dive-report"
 ln -s "$(pwd)/agent/skills/repo-deep-dive-report" "$SKILLS_DIR/repo-deep-dive-report"
 ```
 
+### Option C: install from GitHub/Git via openskills
+
+Use `openskills install` with this repo’s GitHub URL (or any Git URL), then select which skill(s) to install:
+
+```bash
+npx openskills install <git-url>
+```
+
+Example (this repo):
+
+```bash
+npx openskills install https://github.com/okwinds/miscellany
+```
+
+Common options:
+- `-g`: install globally
+- `-u`: install into `.agent/skills/` (portable across tools/projects)
+- `-y`: skip prompts, install all detected skills
+
+Verify / read back:
+
+```bash
+npx openskills list
+npx openskills read repo-deep-dive-report
+```
+
+### Option D: give your tool the GitHub link
+
+Many coding tools can install/load skills directly from a GitHub/Git URL. If yours supports it, point it at this repo and select/target `agent/skills/repo-deep-dive-report`. If it doesn’t, use copy/symlink or `openskills install`.
+
 ### After install
 
-- Restart / open a new Codex or Claude Code session so it re-scans skills.
-- Then ask for it in natural language, e.g. “produce a deep-dive repo review report (MD + HTML) following repo-deep-dive-report”.
+Restart / open a new session so your tool re-scans skills, then ask in natural language (e.g. “produce a deep-dive repo review report (MD + HTML) following repo-deep-dive-report”).
 
 ## Suggested usage
 

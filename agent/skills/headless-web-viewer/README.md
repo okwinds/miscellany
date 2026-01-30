@@ -8,16 +8,16 @@ Render and view webpages using a headless browser (Playwright) to fetch JS-rende
 - `scripts/render_url_playwright.mjs`: renderer CLI
 - `package.json` / `package-lock.json`: Playwright dependency (not vendored)
 
-## Install into Codex / Claude Code
+## Installation
 
-> This folder is the “skill package”. Installing it simply means placing the whole directory (including `SKILL.md`) into your tool’s `skills/` directory, keeping the folder name unchanged.
+> This folder is the “skill package”. Installing it means your coding tool/agent runner can discover the `SKILL.md` inside it (commonly by placing the directory into a `skills/` folder, or by using the tool’s “install from Git” feature).
 
-### Option A: copy (recommended)
+### Option A: copy
 
-From this repo root (pick one: `~/.codex/skills` or `~/.claude/skills`):
+From this repo root, set `SKILLS_DIR` to whatever skills folder your tool scans (e.g. `~/.codex/skills`, `~/.claude/skills`, `~/.config/opencode/skills`, etc):
 
 ```bash
-SKILLS_DIR=~/.codex/skills   # or ~/.claude/skills
+SKILLS_DIR=~/.codex/skills
 mkdir -p "$SKILLS_DIR"
 rm -rf "$SKILLS_DIR/headless-web-viewer"
 cp -R agent/skills/headless-web-viewer "$SKILLS_DIR/headless-web-viewer"
@@ -25,10 +25,10 @@ cd "$SKILLS_DIR/headless-web-viewer"
 npm ci
 ```
 
-### Option B: symlink (best for development)
+### Option B: symlink
 
 ```bash
-SKILLS_DIR=~/.codex/skills   # or ~/.claude/skills
+SKILLS_DIR=~/.codex/skills
 mkdir -p "$SKILLS_DIR"
 rm -rf "$SKILLS_DIR/headless-web-viewer"
 ln -s "$(pwd)/agent/skills/headless-web-viewer" "$SKILLS_DIR/headless-web-viewer"
@@ -36,10 +36,39 @@ cd "$SKILLS_DIR/headless-web-viewer"
 npm ci
 ```
 
+### Option C: install from GitHub/Git via openskills
+
+Use `openskills install` with this repo’s GitHub URL (or any Git URL), then select which skill(s) to install:
+
+```bash
+npx openskills install <git-url>
+```
+
+Example (this repo):
+
+```bash
+npx openskills install https://github.com/okwinds/miscellany
+```
+
+Common options:
+- `-g`: install globally
+- `-u`: install into `.agent/skills/` (portable across tools/projects)
+- `-y`: skip prompts, install all detected skills
+
+Verify / read back:
+
+```bash
+npx openskills list
+npx openskills read headless-web-viewer
+```
+
+### Option D: give your tool the GitHub link
+
+Many coding tools can install/load skills directly from a GitHub/Git URL. If yours supports it, point it at this repo and select/target `agent/skills/headless-web-viewer`. If it doesn’t, use copy/symlink or `openskills install`.
+
 ### After install
 
-- Restart / open a new Codex or Claude Code session so it re-scans skills.
-- Then just ask for it in natural language, e.g. “open this URL headlessly and extract visible text”.
+Restart / open a new session so your tool re-scans skills, then ask in natural language (e.g. “open this URL headlessly and extract visible text”).
 
 ## Usage
 

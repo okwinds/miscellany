@@ -45,6 +45,7 @@
   - `agent/skills/agently-task-dev/`：Agently 框架专用开发技能，生成可运行代码 + 回归测试（验证 schema/ensure_keys 和流式响应 delta/instant/streaming_parse），支持 ToolExtension（Search/Browse/MCP）、TriggerFlow 编排、ChromaDB 知识库，以及 SSE/WS/HTTP 服务化。
   - `agent/skills/skill-create-flow/`：Skill 创建流程：从模糊想法到可测试的技能规格。适合创建基于流程的 Agent 技能（如方法论型、决策型、多步骤工作流），而非纯参考/查询型技能或简单命令。
   - `agent/skills/loopback/`：Loopback 迭代开发循环：受 Claude Code 的 Ralph Loop（`ralphloop`/`ralph-loop`）启发的 Codex 适配版，用“同一句 prompt 多轮迭代 + 停止契约”让任务更收敛。
+  - `agent/skills/dayapp-mobile-push/`：通过 Day.app（Bark）发送一次关键移动端推送。适用于任务完成、失败、阻塞等需要立即提醒的场景，并支持静音时段。
 - `.claude/`：个人工具的工作目录（可能为空/随时间变化），通常可忽略。
 - `LICENSE`：默认许可证。
 

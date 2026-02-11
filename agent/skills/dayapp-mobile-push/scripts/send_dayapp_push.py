@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import os
 import re
+import subprocess
 import sys
 from datetime import datetime, time
 from pathlib import Path
@@ -46,8 +48,82 @@ def is_time_in_range(now: time, start: time, end: time) -> bool:
     return now >= start or now < end
 
 
-def load_config(config_path: Path) -> tuple[str, dict]:
-    """读取配置文件并返回 deviceid 与静音配置。"""
+def normalize_app_name(raw_name: str) -> str:
+    """规范化应用名称，确保前缀简洁可读。"""
+    candidate = raw_name.strip()
+    if not candidate:
+        return "Codex"
+
+    lower_name = candidate.lower()
+    if "claude" in lower_name:
+        return "Claude"
+    if "codex" in lower_name:
+        return "Codex"
+
+    first_token = re.split(r"\s+", candidate)[0]
+    first_token = re.sub(r"[^A-Za-z0-9\u4e00-\u9fff]", "", first_token)
+    if not first_token:
+        return "Codex"
+
+    if first_token.isascii():
+        return first_token[:1].upper() + first_token[1:]
+    return first_token
+
+
+def detect_app_name_by_parent_process() -> str:
+    """从父进程命令行推断当前运行应用名称。"""
+    try:
+        command = subprocess.check_output(
+            ["ps", "-o", "command=", "-p", str(os.getppid())],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip().lower()
+    except Exception:
+        return ""
+
+    if "claude" in command:
+        return "Claude"
+    if "codex" in command:
+        return "Codex"
+    return ""
+
+
+def detect_current_app_name() -> str:
+    """自动检测当前应用名称，优先识别 Claude，其次 Codex。"""
+    env_keys = [key.lower() for key in os.environ.keys()]
+
+    if any("claude" in key for key in env_keys):
+        return "Claude"
+    if any("codex" in key for key in env_keys):
+        return "Codex"
+
+    parent_detected = detect_app_name_by_parent_process()
+    if parent_detected:
+        return parent_detected
+
+    path_value = os.environ.get("PATH", "").lower()
+    if "claude" in path_value and "codex" not in path_value:
+        return "Claude"
+    if "codex" in path_value:
+        return "Codex"
+
+    return "Codex"
+
+
+def resolve_app_name(config_app_name: str) -> str:
+    """解析最终应用名前缀，支持配置和环境覆盖。"""
+    if config_app_name and config_app_name.lower() != "auto":
+        return normalize_app_name(config_app_name)
+
+    env_override = os.environ.get("DAYAPP_APP_NAME", "").strip()
+    if env_override:
+        return normalize_app_name(env_override)
+
+    return detect_current_app_name()
+
+
+def load_config(config_path: Path) -> tuple[str, dict, str]:
+    """读取配置文件并返回 deviceid、静音配置、应用名配置。"""
     if not config_path.exists():
         raise ValueError(f"配置文件不存在: {config_path}")
 
@@ -70,7 +146,9 @@ def load_config(config_path: Path) -> tuple[str, dict]:
     if not isinstance(quiet_hours, dict):
         raise ValueError("quiet_hours 必须是对象，例如 {\"start\":\"23:00\",\"end\":\"08:00\"}")
 
-    return deviceid, quiet_hours
+    app_name = str(data.get("app_name", "auto")).strip() or "auto"
+
+    return deviceid, quiet_hours, app_name
 
 
 def in_quiet_hours(quiet_hours: dict) -> bool:
@@ -86,13 +164,13 @@ def in_quiet_hours(quiet_hours: dict) -> bool:
     return is_time_in_range(now=now, start=start, end=end)
 
 
-def build_url(deviceid: str, task_name: str, task_summary: str, quiet_mode: bool) -> str:
+def build_url(deviceid: str, app_name: str, task_name: str, task_summary: str, quiet_mode: bool) -> str:
     """组装 Day.app 请求 URL；静音时移除 sound/level/volume。"""
-    encoded_name = quote(task_name, safe="")
+    encoded_title = quote(f"{app_name}-{task_name}", safe="")
     encoded_summary = quote(task_summary, safe="")
 
     params = {
-        "group": "codex",
+        "group": app_name,
         "isArchive": "1",
         "badge": "1",
     }
@@ -104,10 +182,7 @@ def build_url(deviceid: str, task_name: str, task_summary: str, quiet_mode: bool
             "volume": "5",
         })
 
-    return (
-        f"https://api.day.app/{deviceid}/Codex-{encoded_name}/{encoded_summary}"
-        f"?{urlencode(params)}"
-    )
+    return f"https://api.day.app/{deviceid}/{encoded_title}/{encoded_summary}?{urlencode(params)}"
 
 
 def send_get(url: str) -> tuple[int, str]:
@@ -137,8 +212,9 @@ def main() -> int:
     config_path = Path(args.config).expanduser().resolve()
 
     try:
-        deviceid, quiet_hours = load_config(config_path)
+        deviceid, quiet_hours, config_app_name = load_config(config_path)
         quiet_mode = in_quiet_hours(quiet_hours)
+        app_name = resolve_app_name(config_app_name)
 
         task_name = truncate_by_limit(strip_sensitive(args.task_name), max_zh=6, max_en=12)
         task_summary = truncate_by_limit(strip_sensitive(args.task_summary), max_zh=25, max_en=50)
@@ -148,7 +224,13 @@ def main() -> int:
         if not task_summary:
             raise ValueError("task_summary 为空，无法发送")
 
-        url = build_url(deviceid, task_name, task_summary, quiet_mode=quiet_mode)
+        url = build_url(
+            deviceid=deviceid,
+            app_name=app_name,
+            task_name=task_name,
+            task_summary=task_summary,
+            quiet_mode=quiet_mode,
+        )
 
         if args.dry_run:
             print(url)

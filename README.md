@@ -42,6 +42,7 @@
     - `agent/skills/pptx-offline/`：PPTX 读写 + OOXML 工作流 + html2pptx（HTML→PPT）+ 缩略图/替换/重排脚本。
     - `agent/skills/offline-office-migration.md`：套件总览与触发建议。
   - `agent/skills/ui-ux-spec-genome/`：构建一套可复刻、可移植的 UI/UX 规范"基因"：扫描 UI 源并生成 `ui-ux-spec/` 文档包骨架，用于规范提取与 UI-only 分阶段改造。
+  - `agent/skills/uiux-react-jsx-packager/`：把现有 React UI Demo 打包成单文件 `*.jsx`（默认导出根组件、运行时只依赖 React），内联 CSS/SVG/图片，用 state 实现导航，并提供本地校验脚本。
   - `agent/skills/agently-task-dev/`：Agently 框架专用开发技能，生成可运行代码 + 回归测试（验证 schema/ensure_keys 和流式响应 delta/instant/streaming_parse），支持 ToolExtension（Search/Browse/MCP）、TriggerFlow 编排、ChromaDB 知识库，以及 SSE/WS/HTTP 服务化。
   - `agent/skills/skill-create-flow/`：Skill 创建流程：从模糊想法到可测试的技能规格。适合创建基于流程的 Agent 技能（如方法论型、决策型、多步骤工作流），而非纯参考/查询型技能或简单命令。
   - `agent/skills/loopback/`：Loopback 迭代开发循环：受 Claude Code 的 Ralph Loop（`ralphloop`/`ralph-loop`）启发的 Codex 适配版，用“同一句 prompt 多轮迭代 + 停止契约”让任务更收敛。

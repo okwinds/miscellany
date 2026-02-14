@@ -47,6 +47,7 @@
   - `agent/skills/skill-create-flow/`：Skill 创建流程：从模糊想法到可测试的技能规格。适合创建基于流程的 Agent 技能（如方法论型、决策型、多步骤工作流），而非纯参考/查询型技能或简单命令。
   - `agent/skills/loopback/`：Loopback 迭代开发循环：受 Claude Code 的 Ralph Loop（`ralphloop`/`ralph-loop`）启发的 Codex 适配版，用“同一句 prompt 多轮迭代 + 停止契约”让任务更收敛。
   - `agent/skills/dayapp-mobile-push/`：通过 Day.app（Bark）发送一次关键移动端推送。适用于任务完成、失败、阻塞等需要立即提醒的场景，并支持静音时段。
+  - `agent/skills/codex-tmux-echo/`：通用 tmux 交互编排 + 回传：启动交互式 CLI、发送按键、等待输出，并支持 worker 回传到 controller pane（避免靠 `sleep` 猜时序）。
 - `.claude/`：个人工具的工作目录（可能为空/随时间变化），通常可忽略。
 - `LICENSE`：默认许可证。
 

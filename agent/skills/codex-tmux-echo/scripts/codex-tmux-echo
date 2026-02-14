@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+codex-tmux-echo [TASK...]
+codex-tmux-echo --task TEXT [dispatch options...]
+codex-tmux-echo --task-stdin [dispatch options...]
+
+This is a thin wrapper around scripts/dispatch.sh with better defaults:
+  - auto-detect scheduler/controller pane (no need to name your tmux session)
+  - does NOT default to yolo/full-auto (pass --cmd explicitly if needed)
+  - backchannel defaults to --report-mode auto (Codex controller => auto-send; otherwise => draft)
+
+Examples:
+  # Run inside your scheduler tmux pane:
+  bash scripts/codex-tmux-echo 'hello，你好呀'
+
+  # Force draft-only backchannel (inject text; do not auto-submit):
+  bash scripts/codex-tmux-echo --report-mode draft '请汇报当前目录有哪些子项目'
+
+  # Force send backchannel (auto-submit into Codex controller conversation):
+  bash scripts/codex-tmux-echo --report-mode send '请给出结论并让调度侧继续处理'
+
+  # Specify custom worker cmd (e.g. yolo) explicitly:
+  bash scripts/codex-tmux-echo --cmd 'codex --dangerously-bypass-approvals-and-sandbox --no-alt-screen' \
+    '请创建一个文件 hello.md，并写入 hello'
+
+EOF
+}
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DISPATCH="$SCRIPT_DIR/dispatch.sh"
+
+if [[ $# -eq 0 ]]; then
+  usage
+  exit 2
+fi
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  usage
+  exit 0
+fi
+
+pass_args=()
+task_parts=()
+mode="auto"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --task)
+      mode="task"
+      pass_args+=("$1" "$2")
+      shift 2
+      ;;
+    --task-stdin)
+      mode="stdin"
+      pass_args+=("$1")
+      shift
+      ;;
+    --socket|--workdir|--scheduler|--scheduler-target|--worker|--cmd|--timeout|--report-prefix|--report-mode|--report-submit|--report-keys|--clear-input|--done-marker)
+      pass_args+=("$1" "$2")
+      shift 2
+      ;;
+    --)
+      shift
+      task_parts+=("$@")
+      break
+      ;;
+    -*)
+      echo "[codex-tmux-echo] unknown option: $1" >&2
+      echo "[codex-tmux-echo] use --help for usage." >&2
+      exit 2
+      ;;
+    *)
+      task_parts+=("$1")
+      shift
+      ;;
+  esac
+done
+
+if [[ "$mode" != "auto" ]]; then
+  exec bash "$DISPATCH" "${pass_args[@]}"
+fi
+
+if [[ "${#task_parts[@]}" -eq 0 ]]; then
+  echo "[codex-tmux-echo] missing TASK text." >&2
+  echo "[codex-tmux-echo] use --task TEXT, or pass TASK words, or pipe stdin with --task-stdin." >&2
+  exit 2
+fi
+
+task="$(printf '%s ' "${task_parts[@]}")"
+task="${task% }"
+exec bash "$DISPATCH" "${pass_args[@]}" --task "$task"

@@ -1,12 +1,18 @@
 ---
 name: skill-review-audit
-version: 0.1.0
+version: 0.1.1
 description: Use when a user asks to review, interpret, or audit an AI agent skill (SKILL.md plus bundled scripts/references/assets) for capabilities, triggering behavior, tool/command usage, safety & privacy risk, supply-chain provenance, quality gaps, and improvement recommendations; also use when validating a skill before installing or deploying it.
 ---
 
 # Skill Review & Audit
 
 Produce a **systematic, multi-dimensional review** of any skill directory (a `SKILL.md` plus optional `scripts/`, `references/`, `assets/`, and install metadata).
+
+## Non-Mutating Constraint (Default)
+
+- **Default is read-only**: do not create, delete, or modify any files (including `apply_patch`, `sed -i`, overwriting configs, auto-fixes, `git commit`, etc.).
+- If the user wants changes applied, **ask for explicit human authorization first** and wait for a clear “yes, apply these edits” (or equivalent) before touching the filesystem.
+- You may still propose fixes as text (recommendations or patch snippets), but **do not apply** them without authorization.
 
 ## Outcomes
 
@@ -27,8 +33,9 @@ Produce a **systematic, multi-dimensional review** of any skill directory (a `SK
 
 ### 0) Scope The Review
 
-- Confirm whether the review is **(a)** informational only or **(b)** includes proposing patches to the skill.
+- Confirm whether the review is **(a)** informational only (read-only) or **(b)** includes proposing patches (still read-only unless explicitly authorized to apply).
 - Define what “safe enough” means for the target environment (network allowed? can write files? secrets present?).
+- Restate the **Non-Mutating Constraint** and ask for authorization if the user requests edits to be applied.
 
 ### 1) Inventory & Provenance
 

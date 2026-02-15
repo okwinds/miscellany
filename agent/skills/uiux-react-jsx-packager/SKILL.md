@@ -1,7 +1,7 @@
 ---
 name: uiux-react-jsx-packager
 description: Package an existing React UI/UX demo into a single self-contained .jsx file with default-export root component, zero third-party runtime dependencies (no react-router/lucide/echarts/etc.), in-file styles (style tag or inline style objects), inline SVG icons, embedded or placeholder images, and state-based navigation. Use when asked to “合并为单文件 JSX/单文件打包/one-file React/零外部依赖/内联 CSS/替换图标库/用 state 做路由/把 demo 打包成独立 JSX 文件”.
-version: 0.1.0
+version: 0.1.1
 author: 肆〇柒/ForOhZen
 ---
 
@@ -17,16 +17,18 @@ author: 肆〇柒/ForOhZen
 - Replace images with **base64-inlined** data URLs or deterministic placeholders.
 - Implement navigation via **component state** (optionally sync to `location.hash` for shareable URLs).
 - Preserve **all interactions/animations/state logic**; do not simplify behavior.
-- Preserve **pixel-perfect visual fidelity** (spacing/colors/typography/shadows/radius) by embedding the compiled CSS whenever possible.
+- Prefer embedding the **compiled CSS** (if available) to preserve spacing/colors/shadows.
 
-### Pixel-perfect definition (non-negotiable)
+### 关于“像素级一致”（可选增强，不是默认门禁）
 
-“像素级一致 / pixel-perfect”在工程上必须限定条件，否则不可验证。默认按以下条件验收：
+“像素级一致 / pixel-perfect”在工程上必须限定条件，否则不可验证。**只有当你要对外宣称 pixel-perfect 时**，才需要做像素 diff 验收：
 
 - **同一台机器**、同一 OS 与同一浏览器版本（建议固定 Chrome 版本）
 - 固定 viewport（宽高）与 `deviceScaleFactor`（DPR）
 - 字体必须一致（包含字重）：不要依赖系统字体差异；必要时把字体文件以 `@font-face` 形式内联进 CSS（base64 data URL）
 - 截图对比时必须处于“稳定态”：避免进行中动画/过渡影响像素 diff（见 Verification）
+
+默认交付的强门禁是“**可携带可跑、不白屏、导航可用**”（见 Verification Gate）。
 
 ## Workflow (do in order)
 
@@ -121,11 +123,33 @@ function useRouter() { return React.useContext(RouterContext); }
 
 ### 8) Verification (must run before “done”)
 
-- Confirm only one import remains and it is from `react`.
-- Confirm `export default` exists.
-- Confirm no `.css`/`.svg`/`.png` imports remain.
-- **Pixel-perfect required**: run a visual regression screenshot diff between the original app and the merged component, under the same deterministic environment.
-- Optionally do a parse/bundle sanity check:
+#### Verification Gate（默认必达）
+
+必须按顺序验证，任何一步失败都不算“打包完成”：
+
+1) **静态门禁（必须）**
+   - 只保留 1 条 `import ... from 'react'`
+   - 有 `export default`
+   - 无 `require()` / `import()`
+   - 无资产导入（`.css/.svg/.png/...`）
+   - 运行：`python3 scripts/verify_singlefile_jsx.py /path/to/Merged.jsx`
+
+2) **运行时门禁（必须）**
+   - 用一个“临时预览工程”加载该 `.jsx`，确保**首屏不白屏**，并且能完成最小交互 smoke：
+     - 侧边栏（或顶栏）切换主要模块/页面（至少点一轮能切换内容）
+     - `location.hash` 切换（如果你实现了 hash 同步）
+   - 推荐使用本技能自带脚本：`bash scripts/preview_single_jsx_vite.sh /path/to/Merged.jsx`
+
+> 常见误判：端口被占用时，Vite 会输出 `Port XXXX is in use, trying another one...` 并自动切换端口。**必须以终端输出的 `Local:` URL 为准**，不要死盯一个固定端口。
+
+3) **可携带性门禁（必须）**
+   - 不依赖远程资源（字体/图片不要用 `https://...`）
+   - 不在 UI/注释中泄露绝对路径（例如本机用户名/目录结构）
+
+#### 可选增强（仅在你宣称 pixel-perfect 时才要求）
+
+- 用截图 diff 做像素级对比（固定浏览器/viewport/DPR，禁用动画/过渡）。
+- 可选做 bundle sanity：
   - `npx esbuild merged.jsx --bundle --format=esm --external:react --outfile=/tmp/merged.js`
 
 Use the bundled verifier:
@@ -153,3 +177,8 @@ python3 scripts/verify_singlefile_jsx.py /path/to/YourMerged.jsx
 ## Bundled Scripts
 
 - `scripts/verify_singlefile_jsx.py`: Heuristic gate to catch non-React imports, `require()`, missing default export, and common TS residue.
+- `scripts/preview_single_jsx_vite.sh`: Spin up an isolated Vite dev server under `/tmp` and preview a single `.jsx` file with an ErrorBoundary and reliable URL output.
+
+## References
+
+- `references/preview-and-smoke.md`: Preview pitfalls (port switching, cache reuse), smoke checklist, and troubleshooting playbook.

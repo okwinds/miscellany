@@ -1,6 +1,6 @@
 # uiux-react-jsx-packager
 
-把一个现有的 React UI/UX Demo 打包成 **单个自包含** 的 `*.jsx` 文件：默认导出根组件、运行时只依赖 React（不依赖 react-router/lucide/echarts 等第三方库）、样式内联（`<style>` 或 `style={{...}}`）、图标替换为内联 SVG、图片改为 base64 或确定性占位图，并用组件 state 实现“路由/导航”。适用于你希望“合并为单文件 JSX/单文件打包/one-file React/零外部依赖/内联 CSS/替换图标库/用 state 做路由/把 demo 打包成独立 JSX 文件”的场景。
+Package an existing React UI/UX demo into a single self-contained .jsx file with default-export root component, zero third-party runtime dependencies (no react-router/lucide/echarts/etc.), in-file styles (style tag or inline style objects), inline SVG icons, embedded or placeholder images, and state-based navigation. Use when asked to “合并为单文件 JSX/单文件打包/one-file React/零外部依赖/内联 CSS/替换图标库/用 state 做路由/把 demo 打包成独立 JSX 文件”.
 
 ## 包含内容
 
@@ -70,11 +70,28 @@ npx openskills read uiux-react-jsx-packager
 
 ## 使用方法
 
-这个 skill 本质是一套写在 `SKILL.md` 里的工作流说明。你可以在需要“把 React UI Demo 合并成单文件 `*.jsx`”时，让你的编码工具 / Agent 运行器使用 `uiux-react-jsx-packager`。
+本 skill 主要是 `SKILL.md` 的工作流说明，并附带少量可选脚本用于验证与预览。
 
-如果你希望对生成的单文件做一个快速本地校验，可以运行随附的验证脚本：
+### 校验合并后的 `.jsx`
+
+用启发式规则检查常见违规项（非 React import、`require()`、动态 `import()`、缺少 default export、资产导入等）：
 
 ```bash
-cd /path/to/uiux-react-jsx-packager
-python3 scripts/verify_singlefile_jsx.py /path/to/YourMerged.jsx
+python3 agent/skills/uiux-react-jsx-packager/scripts/verify_singlefile_jsx.py /path/to/Merged.jsx
 ```
+
+更严格模式（把 warning 当作 fail）：
+
+```bash
+python3 agent/skills/uiux-react-jsx-packager/scripts/verify_singlefile_jsx.py --strict /path/to/Merged.jsx
+```
+
+### 运行时 smoke 预览（推荐）
+
+在 `/tmp` 下创建隔离的 Vite+React 预览工程，用来尽早抓到“白屏/运行时异常”：
+
+```bash
+NO_OPEN=1 PORT=5188 bash agent/skills/uiux-react-jsx-packager/scripts/preview_single_jsx_vite.sh /path/to/Merged.jsx
+```
+
+如果终端出现 `Port 5188 is in use, trying another one...`，说明端口被占用并自动切换；请以 `Local:` 行的 URL 为准。

@@ -70,11 +70,28 @@ Many tools require a restart / new session to re-scan skills.
 
 ## Usage
 
-This skill is a set of instructions in `SKILL.md`. Ask your coding tool / agent runner to use the `uiux-react-jsx-packager` skill when you want to merge a React UI demo into one self-contained `*.jsx` file.
+This skill is primarily an instruction set in `SKILL.md`, plus a couple of optional helper scripts.
 
-If you want a quick local gate for the generated file, use the bundled verifier:
+### Verify a merged `.jsx` file
+
+Runs a heuristic gate to catch common packaging violations (non-React imports, `require()`, dynamic `import()`, missing default export, asset imports, etc.):
 
 ```bash
-cd /path/to/uiux-react-jsx-packager
-python3 scripts/verify_singlefile_jsx.py /path/to/YourMerged.jsx
+python3 agent/skills/uiux-react-jsx-packager/scripts/verify_singlefile_jsx.py /path/to/Merged.jsx
 ```
+
+Stricter mode (treat warnings as failures):
+
+```bash
+python3 agent/skills/uiux-react-jsx-packager/scripts/verify_singlefile_jsx.py --strict /path/to/Merged.jsx
+```
+
+### Runtime smoke preview (recommended)
+
+Spin up an isolated Vite+React dev server under `/tmp` to catch “white screen” runtime errors early:
+
+```bash
+NO_OPEN=1 PORT=5188 bash agent/skills/uiux-react-jsx-packager/scripts/preview_single_jsx_vite.sh /path/to/Merged.jsx
+```
+
+If the terminal shows `Port 5188 is in use, trying another one...`, always open the URL in the `Local:` line.

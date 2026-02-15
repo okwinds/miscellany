@@ -98,3 +98,54 @@
 
 - Next step：更新 `DOCS_INDEX.md` 登记新增文档；检查 `git status`；通过 Day.app 推送通知。
 - Risks/Notes：注意 README 的安装路径示例保持工具无关。
+
+---
+
+## 2026-02-15
+
+### Task: uiux-react-jsx-packager runtime gate hardening
+
+#### Timestamp
+
+- When: `2026-02-15 19:05` (+0800)
+- Who: `agent`
+- Context: 将 `uiux-react-jsx-packager` 的“可携带可跑/不白屏/导航可用”作为默认门禁，并补齐运行时 smoke 预览脚本与排障手册
+
+#### Goal (this step)
+
+- Goal：提升 skill 的可复现性与“白屏”排障效率；补齐 runtime gate；升小版本
+- Constraints：变更必须通用，不绑定具体项目/脚本；最小修改；不引入 vendored 依赖目录
+
+#### Action
+
+- Files touched:
+  - `agent/skills/uiux-react-jsx-packager/SKILL.md`
+  - `agent/skills/uiux-react-jsx-packager/README.md`
+  - `agent/skills/uiux-react-jsx-packager/README.zh-CN.md`
+  - `agent/skills/uiux-react-jsx-packager/scripts/verify_singlefile_jsx.py`
+  - `agent/skills/uiux-react-jsx-packager/scripts/preview_single_jsx_vite.sh`（新增）
+  - `agent/skills/uiux-react-jsx-packager/references/preview-and-smoke.md`（新增）
+- Commands run:
+  - `python3 /Users/okwinds/.claude/skills/skill-open-source/scripts/publish_skill.py --source /Users/okwinds/.claude/skills/uiux-react-jsx-packager --dest agent/skills/uiux-react-jsx-packager --overwrite --write-readmes --normalize-paths`
+  - `python3 -m py_compile agent/skills/uiux-react-jsx-packager/scripts/verify_singlefile_jsx.py`
+  - `python3 agent/skills/uiux-react-jsx-packager/scripts/verify_singlefile_jsx.py -h`
+  - `bash -n agent/skills/uiux-react-jsx-packager/scripts/preview_single_jsx_vite.sh`
+
+#### Result
+
+- Outcome：
+  - `SKILL.md` 默认门禁分层：MUST=可跑/不白屏/导航可用；pixel-perfect 改为“宣称时才要求”的可选增强。
+  - `verify_singlefile_jsx.py` 增强：支持 `--strict/--verbose`，并加入 alias/远程 URL/路径泄露等通用告警。
+  - 新增预览脚本 `preview_single_jsx_vite.sh` 与排障手册 `references/preview-and-smoke.md`（强调“端口自动切换只信 Local URL”）。
+  - `agent/skills/uiux-react-jsx-packager/SKILL.md` 版本号升至 `0.1.1`。
+- Key output/snippet (optional, short)：`py_compile ok`
+
+#### Decision (if any)
+
+- Decision：把“运行时 smoke gate + 端口误判排障”写进 skill 的默认验收与脚本工具链。
+- Why：静态校验无法覆盖“import/初始化抛错导致白屏”等问题；端口占用自动切换是高频误判来源。
+
+#### Next
+
+- Next step：补齐本次 spec/task summary 到 `docs/` 并更新 `DOCS_INDEX.md`；检查 `git status`。
+- Risks/Notes：预览脚本依赖 `node/npm`，且首次运行会安装 Vite（可选门禁，不作为离线强制项）。

@@ -219,3 +219,7 @@ REPOSITORY_WORKFLOW.md
 .AppleDouble
 .LSOverride
 ._*
+
+# Local collaboration docs (not published)
+/docs/
+/DOCS_INDEX.md

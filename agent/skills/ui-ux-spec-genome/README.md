@@ -7,6 +7,7 @@ Build a portable, reproducible UI/UX spec “genome”: scan a frontend repo for
 - `SKILL.md`: workflow + prompt templates
 - `scripts/scan_ui_sources.sh`: heuristically scan a repo for UI sources (globs + keyword hits)
 - `scripts/generate_output_skeleton.sh`: scaffold a standard `ui-ux-spec/` doc folder
+- `scripts/lint_replica_spec.sh`: lint for replication-grade specs (no placeholders)
 - `references/design-extraction-checklist.md`: detailed extraction checklist
 
 ## Installation
@@ -86,6 +87,7 @@ Restart / open a new session so your tool re-scans skills.
 - `bash`
 - `rg` (ripgrep) is required by `scripts/scan_ui_sources.sh`
 - Optional: `git` (used to resolve repo root)
+- For replica lint: `python3` (used by `scripts/lint_replica_spec.sh`)
 
 ### Scan UI sources
 
@@ -97,6 +99,16 @@ bash agent/skills/ui-ux-spec-genome/scripts/scan_ui_sources.sh --root /path/to/r
 
 ```bash
 bash agent/skills/ui-ux-spec-genome/scripts/generate_output_skeleton.sh ./ui-ux-spec
+```
+
+For replication-grade (“pixel-clone”) specs:
+
+```bash
+bash agent/skills/ui-ux-spec-genome/scripts/generate_output_skeleton.sh ./ui-ux-spec --replica
+# During drafting, templates will be empty: use non-strict first.
+bash agent/skills/ui-ux-spec-genome/scripts/lint_replica_spec.sh --root ./ui-ux-spec --non-strict
+# Before claiming "replica-grade done", strict lint must pass.
+bash agent/skills/ui-ux-spec-genome/scripts/lint_replica_spec.sh --root ./ui-ux-spec
 ```
 
 ## Notes

@@ -1,6 +1,6 @@
 ---
 name: ui-ux-spec-genome
-version: 0.1.0
+version: 0.1.1
 description: "A portable, reproducible UI/UX spec standard: scan a frontend repo for UI sources and scaffold a ui-ux-spec documentation bundle (tokens, global styles, components, patterns, pages, a11y). Also supports plan-driven UI-only refactors based on an existing ui-ux-spec. Excludes business logic and domain workflows."
 ---
 
@@ -13,6 +13,7 @@ Extract a reusable UI/UX design spec from a frontend codebase by inventorying UI
 - `bash`
 - `rg` (ripgrep) is required by `scripts/scan_ui_sources.sh`
 - Optional: `git` (used to resolve repo root)
+- For replica lint: `python3` (used by `scripts/lint_replica_spec.sh`)
 
 ## When to use
 - You want to create or update a `ui-ux-spec/` doc bundle for a frontend codebase (tokens/styles/components/patterns/pages/a11y).
@@ -39,15 +40,30 @@ Examples:
 2) If existing repo: run `scripts/scan_ui_sources.sh` to scan the repo root (no directory layout assumptions). It uses common globs + keyword hits, and ignores common build/cache dirs and `ui-ux-spec/**` by default (add `--ignore` if your extraction output lives elsewhere, e.g. `docs/ui-ux-spec/**`).
 3) Optionally: `scripts/scan_ui_sources.sh <repo_root> [out_file] [extra_glob ...]` or `--root/--out/--force/--ignore` for nonstandard layouts.
 4) Create the output folder (default `./ui-ux-spec`) via `scripts/generate_output_skeleton.sh` and write all extraction results inside it.
+   - If you need a “pixel-clone / replication-grade” spec (implementable without reading source code), generate the skeleton with `--replica`.
 5) Produce outputs in the default structure (see "Output structure").
 
 ## Verification (definition of done)
+### Standard (portable spec)
 - The scan runs successfully and you can identify where tokens/themes/global styles/components/pages live.
 - The `ui-ux-spec/` folder is generated (or updated) with the standard structure.
 - At minimum, these docs are filled with real content (not placeholders):
   - Tokens + global styles
   - Component catalog
   - Page templates
+
+### Replica / pixel-clone spec (implementable without reading source)
+Use this stricter definition when the goal is “build the current UI 1:1 from the spec alone”.
+
+- The spec declares a single **UI baseline** (browser + viewport + zoom + density + fonts + theme/style switches). Do not mix baselines.
+- Every UI-visible string is exact (no truncation, no “…” placeholders unless the literal UI copy contains it and is explicitly quoted as a literal).
+- For each component/page described, the spec includes **implementable details**:
+  - Structure (DOM tree / slots / layout hierarchy)
+  - Styles (class list or explicit CSS declarations) including fixed pixel values
+  - States + interactions (including close conditions, keyboard behavior, focus rules)
+  - Deterministic mock data for dynamic UI (lists, logs, progress, charts)
+- The spec contains **no placeholders** (no “见源码/see source”, no TODO/TBD/FIXME, no standalone `...`/`…`).
+- `scripts/lint_replica_spec.sh` passes on the target spec folder.
 
 ## Heuristic disclaimer (read this to avoid surprises)
 - `scripts/scan_ui_sources.sh` is a heuristic inventory tool. It finds likely places to look; it does not guarantee complete coverage, and it does not extract “final answers” (token values, component APIs, page rules) automatically.
@@ -90,6 +106,33 @@ Deliverables:
 - Extracted design spec (same as greenfield)
 - Migration plan (phased, low-risk steps)
 - Component-by-component mapping notes
+
+### C) Replica / pixel-clone extraction (current UI as the only truth)
+Goal: write a “replication-grade” spec that allows a separate team to recreate the *current* UI pixel-for-pixel **without reading source code**.
+
+1) Freeze a baseline (required)
+   - Browser + version
+   - Viewport size (px) + device pixel ratio
+   - Zoom level (100% vs others)
+   - Typography baseline (font stack + smoothing) and any “density/resolution” toggles used by the app
+   - Theme/style switches (light/dark, style presets, etc.)
+2) Extract foundations
+   - Tokens with *actual resolved values* (not just names), including overlay/alpha blending rules.
+   - Global styles: reset/body defaults/focus-visible/scrollbars.
+3) For each component/page: write implementable blocks
+   - DOM structure (tree/slots), including containers, scroll regions, and portals.
+   - Styles: either (a) exact utility class lists, or (b) explicit CSS declarations, including fixed pixel values.
+   - Exact microcopy + icons (inline SVG paths or asset references).
+   - State machine + interactions: open/close rules, click outside, ESC, focus management, keyboard navigation.
+   - Deterministic mock data that reproduces the current visual density and line breaks.
+4) Enforce “no placeholders”
+   - Treat `见源码` / `see source` / TODO/TBD / standalone `...`/`…` as failing the goal.
+   - Expect initial lint failures right after scaffolding (templates start empty). Fill the template fields first, then lint.
+   - Use `scripts/lint_replica_spec.sh --non-strict` during drafting; switch to strict lint and iterate until it passes.
+
+Deliverables:
+- A `00_Guides/REPLICA_STANDARD.md` describing the baseline and rules (recommended)
+- A `ui-ux-spec/` (or `docs/ui-ux-spec/`, `specs/ui-ux-spec/`) folder that passes replica lint
 
 ## Refactor from spec (fixed flow)
 Use this when applying an existing `ui-ux-spec/` to a target project. Always work from a plan and execute step-by-step to avoid missing gaps.
@@ -201,6 +244,7 @@ Please align the following components to the spec while keeping business logic u
 This structure is a recommended documentation layout. It does not need to match the target project's directory structure, and it can be renamed or relocated (e.g., `docs/ui-ux-spec/`).
 ```
 ui-ux-spec/
+  00_Guides/ (optional but recommended for replica mode)
   01_Foundation/
   02_Components/
   03_Patterns/
@@ -213,4 +257,5 @@ ui-ux-spec/
 ## Resources
 - `scripts/scan_ui_sources.sh`: find candidate UI sources in a repo.
 - `scripts/generate_output_skeleton.sh`: create the standard output folders and placeholder templates.
+- `scripts/lint_replica_spec.sh`: fail-fast checks for placeholders and incomplete replica specs.
 - `references/design-extraction-checklist.md`: detailed checklist derived from README.

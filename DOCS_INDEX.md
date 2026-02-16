@@ -23,6 +23,7 @@
 - `docs/specs/`：规格/设计文档目录（每个功能/模块一份 spec）。
 - `docs/specs/2026-02-13-uiux-react-jsx-packager-open-source.md`：发布 `uiux-react-jsx-packager` skill 的最小规格（目标/约束/验收/测试计划）。
 - `docs/specs/2026-02-15-uiux-react-jsx-packager-runtime-gate.md`：强化 `uiux-react-jsx-packager` 的默认门禁（可跑/不白屏/导航可用）并沉淀通用 smoke/排障。
+- `docs/specs/2026-02-16-ui-ux-spec-genome-sync-open-source.md`：同步/开源发布 `ui-ux-spec-genome` skill（补齐版本号规则、排除本地安装痕迹、离线自检）。
 
 ---
 
@@ -32,6 +33,7 @@
 - `docs/task-summaries/`：任务结束总结目录（每次结项一份）。
 - `docs/task-summaries/2026-02-13-uiux-react-jsx-packager-open-source.md`：本次发布 `uiux-react-jsx-packager` skill 的任务总结（变更、验证与结果）。
 - `docs/task-summaries/2026-02-15-uiux-react-jsx-packager-runtime-gate.md`：本次强化 `uiux-react-jsx-packager` 运行时门禁的任务总结（变更、验证与结果）。
+- `docs/task-summaries/2026-02-16-ui-ux-spec-genome-sync-open-source.md`：本次同步/开源发布 `ui-ux-spec-genome` 的任务总结（同步范围、验证命令与结果）。
 - `docs/templates/task-summary-template.md`：任务总结模板（复制填空）。
 
 ---

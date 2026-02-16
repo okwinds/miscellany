@@ -149,3 +149,56 @@
 
 - Next step：补齐本次 spec/task summary 到 `docs/` 并更新 `DOCS_INDEX.md`；检查 `git status`。
 - Risks/Notes：预览脚本依赖 `node/npm`，且首次运行会安装 Vite（可选门禁，不作为离线强制项）。
+
+---
+
+## 2026-02-16
+
+### Task: sync/open-source ui-ux-spec-genome
+
+#### Timestamp
+
+- When: `2026-02-16 07:59` (+0800)
+- Who: `agent`
+- Context: 将本地全局 `ui-ux-spec-genome` skill 同步到仓库 `agent/skills/ui-ux-spec-genome/`，用于开源分发，并遵循版本号规则
+
+#### Goal (this step)
+
+- Goal：同步最新内容（含脚本/README/参考资料），排除本地安装痕迹文件，并 bump `SKILL.md` 版本号
+- Constraints：最小修改；不引入 vendored 依赖目录；README 保持工具无关
+
+#### Action
+
+- Files touched:
+  - `agent/skills/ui-ux-spec-genome/`（同步更新）
+  - `DOCS_INDEX.md`
+  - `docs/worklog.md`
+  - `docs/specs/2026-02-16-ui-ux-spec-genome-sync-open-source.md`（新增）
+  - `docs/task-summaries/2026-02-16-ui-ux-spec-genome-sync-open-source.md`（新增）
+- Commands run:
+  - `python3 /Users/okwinds/.claude/skills/skill-open-source/scripts/publish_skill.py --source ~/.claude/skills/ui-ux-spec-genome --dest agent/skills/ui-ux-spec-genome --overwrite --write-readmes --normalize-paths --exclude .openskills.json --exclude .DS_Store`
+  - `bash -n agent/skills/ui-ux-spec-genome/scripts/scan_ui_sources.sh`
+  - `bash -n agent/skills/ui-ux-spec-genome/scripts/generate_output_skeleton.sh`
+  - `bash -n agent/skills/ui-ux-spec-genome/scripts/lint_replica_spec.sh`
+  - `bash agent/skills/ui-ux-spec-genome/scripts/scan_ui_sources.sh --help`
+  - `bash agent/skills/ui-ux-spec-genome/scripts/generate_output_skeleton.sh --help`
+  - `bash agent/skills/ui-ux-spec-genome/scripts/lint_replica_spec.sh --help`
+
+#### Result
+
+- Outcome：
+  - skill 内容已同步到 `agent/skills/ui-ux-spec-genome/`，并引入 `scripts/lint_replica_spec.sh`。
+  - 同步过程中排除了 `.openskills.json` 与 `.DS_Store` 等本地痕迹文件。
+  - `agent/skills/ui-ux-spec-genome/SKILL.md` 已补回 `version` 并升至 `0.1.1`。
+  - 本次 spec 与 task summary 已新增并登记到 `DOCS_INDEX.md`。
+- Key output/snippet (optional, short)：`bash -n` / `--help` 均 `exit 0`
+
+#### Decision (if any)
+
+- Decision：同步时显式排除 `.openskills.json`；同步后补回并 bump `version`。
+- Why：避免提交本地安装时间戳等非开源资产；遵循 skill 版本号规则。
+
+#### Next
+
+- Next step：`git status` / `git diff` 复核变更范围；如需发布再执行 `git commit`/`git push`。
+- Risks/Notes：源全局 skill 未维护 `version` 字段，覆盖同步后需要二次确认 `SKILL.md` front matter。

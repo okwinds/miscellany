@@ -7,6 +7,7 @@
 - `SKILL.md`：工作流 + prompt 模板
 - `scripts/scan_ui_sources.sh`：用 globs + 关键字命中对仓库做启发式扫描，定位 UI 相关文件
 - `scripts/generate_output_skeleton.sh`：生成标准的 `ui-ux-spec/` 文档目录骨架
+- `scripts/lint_replica_spec.sh`：复刻级规格文档 lint（禁止占位符）
 - `references/design-extraction-checklist.md`：更细的提取检查清单
 
 ## 安装
@@ -86,6 +87,7 @@ npx openskills read ui-ux-spec-genome
 - `bash`
 - `rg`（ripgrep）：`scripts/scan_ui_sources.sh` 必需
 - 可选：`git`（用于自动解析仓库根目录）
+- 复刻级 lint：`python3`（`scripts/lint_replica_spec.sh` 会用到）
 
 ### 扫描 UI 来源
 
@@ -97,6 +99,16 @@ bash agent/skills/ui-ux-spec-genome/scripts/scan_ui_sources.sh --root /path/to/r
 
 ```bash
 bash agent/skills/ui-ux-spec-genome/scripts/generate_output_skeleton.sh ./ui-ux-spec
+```
+
+如果要写“复刻级 / 像素级 1:1”的规格文档：
+
+```bash
+bash agent/skills/ui-ux-spec-genome/scripts/generate_output_skeleton.sh ./ui-ux-spec --replica
+# 草稿阶段模板字段通常为空：先用非严格模式
+bash agent/skills/ui-ux-spec-genome/scripts/lint_replica_spec.sh --root ./ui-ux-spec --non-strict
+# 交付前必须通过严格 lint
+bash agent/skills/ui-ux-spec-genome/scripts/lint_replica_spec.sh --root ./ui-ux-spec
 ```
 
 ## 注意事项

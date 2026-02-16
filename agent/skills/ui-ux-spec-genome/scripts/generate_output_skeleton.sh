@@ -4,17 +4,19 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage:
-  generate_output_skeleton.sh [out_root] [--force]
+  generate_output_skeleton.sh [out_root] [--force] [--replica]
 
 Notes:
   - Default out_root is ./ui-ux-spec.
   - Creates the standard output folders and placeholder Markdown files.
   - Existing files are preserved unless --force is provided.
+  - With --replica, also writes replica-grade guide/templates (pixel-clone friendly).
 EOF
 }
 
 out_root="ui-ux-spec"
 force=0
+replica=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -24,6 +26,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     -f|--force)
       force=1
+      shift
+      ;;
+    --replica)
+      replica=1
       shift
       ;;
     *)
@@ -65,7 +71,80 @@ write_file() {
   echo "write: $path"
 }
 
-write_file "$out_root/01_Foundation/FOUNDATION.md" \
+if [[ $replica -eq 1 ]]; then
+  mkdir -p "$out_root/00_Guides"
+  guide_path="$out_root/00_Guides/REPLICA_STANDARD.md"
+  if [[ -f "$guide_path" && $force -eq 0 ]]; then
+    echo "skip: $guide_path"
+  else
+    cat <<'EOF' > "$guide_path"
+# Replica / Pixel-Clone Standard
+
+This guide defines the stricter bar for replication-grade UI specs: a team can recreate the current UI pixel-for-pixel using the spec alone (no source code reading).
+
+## Baseline (single source of truth)
+- Browser + version:
+- Viewport (px) + device pixel ratio:
+- Zoom level:
+- OS / font rendering notes (if relevant):
+- Density / resolution toggles used by the app (e.g., root font-size):
+- Theme / style presets (light/dark + variants):
+
+## Hard rules (must pass)
+- No placeholders:
+  - Disallow: any instruction that requires consulting source code to implement UI
+  - Disallow: unfinished/task markers (work-in-progress notes)
+  - Disallow: standalone ... / … used as filler (only allowed if it is literal UI copy and explicitly quoted)
+  - If the literal UI copy contains an ellipsis, quote it explicitly as a literal string.
+- Exact microcopy:
+  - Every UI-visible string is exact (no truncation, no paraphrase).
+- Implementable details for every described UI:
+  - Structure (DOM tree / slots / layout hierarchy)
+  - Styles (exact class lists or explicit CSS declarations) including fixed pixel values
+  - States + interactions (open/close rules, click-outside, ESC, keyboard navigation, focus)
+  - Deterministic mock data for dynamic UIs (lists/logs/progress/charts)
+
+## Suggested workflow
+1) Scaffold docs with: generate_output_skeleton.sh --replica
+2) Fill in foundations first (tokens + global styles + baseline).
+3) Write components/pages as implementable blocks.
+4) During drafting, templates start empty. Use non-strict lint first, then strict:
+   - bash scripts/lint_replica_spec.sh --root <spec_root> --non-strict
+   - bash scripts/lint_replica_spec.sh --root <spec_root>
+EOF
+    echo "write: $guide_path"
+  fi
+fi
+
+if [[ $replica -eq 1 ]]; then
+  write_file "$out_root/01_Foundation/FOUNDATION.md" \
+"# Foundation
+
+## Replica baseline (required for pixel-clone)
+- Browser + version:
+- Viewport (px) + device pixel ratio:
+- Zoom level:
+- Density / resolution toggles used by the app:
+- Theme / style presets:
+
+## Tokens (resolved values)
+- Colors:
+- Typography:
+- Spacing:
+- Radius:
+- Shadow:
+- Z-index:
+- Motion:
+
+## Global styles
+- Reset/normalize:
+- Body defaults:
+- Links/forms:
+- Focus-visible:
+- Scrollbar/selection:
+"
+else
+  write_file "$out_root/01_Foundation/FOUNDATION.md" \
 "# Foundation
 
 ## Tokens
@@ -84,8 +163,33 @@ write_file "$out_root/01_Foundation/FOUNDATION.md" \
 - Focus-visible:
 - Scrollbar/selection:
 "
+fi
 
-write_file "$out_root/02_Components/COMPONENTS.md" \
+if [[ $replica -eq 1 ]]; then
+  write_file "$out_root/02_Components/COMPONENTS.md" \
+"# Components
+
+## Inventory
+- Component list:
+
+## Per component template (replica / pixel-clone)
+- Purpose:
+- Placement (where used):
+- Structure (DOM tree / slots):
+- Styles (class list or CSS declarations, include fixed px values):
+- Content (exact microcopy + icons):
+- Data (deterministic mock examples):
+- Variants:
+- States:
+- Interaction (click/keyboard/focus/close rules):
+- A11y (role/aria, focus order, live regions):
+- Responsive:
+- Motion:
+- Theming hooks:
+- Edge cases:
+"
+else
+  write_file "$out_root/02_Components/COMPONENTS.md" \
 "# Components
 
 ## Inventory
@@ -103,6 +207,7 @@ write_file "$out_root/02_Components/COMPONENTS.md" \
 - Theming hooks:
 - Edge cases:
 "
+fi
 
 write_file "$out_root/03_Patterns/PATTERNS.md" \
 "# Patterns
@@ -114,7 +219,23 @@ write_file "$out_root/03_Patterns/PATTERNS.md" \
 - Empty/loading/error:
 "
 
-write_file "$out_root/04_Pages/PAGES.md" \
+if [[ $replica -eq 1 ]]; then
+  write_file "$out_root/04_Pages/PAGES.md" \
+"# Pages
+
+- List page skeleton:
+- Detail page skeleton:
+- Form page skeleton:
+- Dashboard skeleton:
+
+Replica add-ons:
+- Modules ordering (top-to-bottom) + spacing rules
+- Key container widths/heights (fixed px values)
+- Scroll regions and overflow rules
+- Exact microcopy for headings/empty states
+"
+else
+  write_file "$out_root/04_Pages/PAGES.md" \
 "# Pages
 
 - List page skeleton:
@@ -122,6 +243,7 @@ write_file "$out_root/04_Pages/PAGES.md" \
 - Form page skeleton:
 - Dashboard skeleton:
 "
+fi
 
 write_file "$out_root/05_A11y/A11Y.md" \
 "# Accessibility

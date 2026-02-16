@@ -2,6 +2,21 @@
 
 Use this checklist to avoid missing UI/UX details. Keep notes tied to file paths and component names. Exclude business logic, business rules, and domain workflows.
 
+## 0. Replica / pixel-clone baseline (when “1:1 from docs” is required)
+Use this section when the spec must enable pixel-level replication without reading source code.
+
+- Single baseline only (do not mix):
+  - Browser + version
+  - Viewport size (px), device pixel ratio, zoom
+  - OS font rendering notes (if relevant)
+  - App density/resolution toggles (e.g., root font-size changes)
+  - Theme/style presets (light/dark + any style variants)
+- Hard rule: no placeholders
+  - Disallow: “见源码/参考源码/源码片段”, TODO/TBD/FIXME, standalone `...`/`…`
+  - If the literal UI copy contains an ellipsis, quote it explicitly as a literal string in the spec
+- Deterministic inputs for dynamic UI
+  - Provide mock data examples (JSON or tables) so list density, wrapping, and ordering match the current UI
+
 ## 1. Foundations (tokens)
 - Colors: base, semantic, states, dark mode mapping, overlays, charts, contrast notes
 - Typography: font stacks, scale, weights, line-height, letter spacing, smoothing, mono font
@@ -31,6 +46,11 @@ For each component: purpose, structure/slots, variants, states, interactions, a1
 - search/filter panels, tables, detail sections
 - action hierarchy and destructive flows
 - permissions and role-based UI
+
+Replica add-ons (recommended):
+- Provide DOM tree / layout hierarchy for each page region
+- Provide exact class lists or explicit CSS declarations for key containers
+- Provide exact microcopy (no truncation)
 
 ## 6. Microcopy & i18n
 - button verbs and confirmation language

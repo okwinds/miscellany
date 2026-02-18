@@ -59,8 +59,9 @@ Prereqs for openskills:
 Install from a cloneable repo URL (do **not** use a GitHub `.../tree/...` subdirectory link):
 
 ```bash
-# Recommended: pin a version, e.g. npx openskills@0.0.0 install ...
-npx openskills install https://github.com/okwinds/miscellany
+# Recommended: pin a version to reduce supply-chain drift.
+# Example pinned version: 1.5.0
+npx openskills@1.5.0 install https://github.com/okwinds/miscellany
 ```
 
 When prompted, select `ui-ux-spec-genome` (repo path: `agent/skills/ui-ux-spec-genome`).
@@ -68,8 +69,8 @@ When prompted, select `ui-ux-spec-genome` (repo path: `agent/skills/ui-ux-spec-g
 Verify / read back:
 
 ```bash
-npx openskills list
-npx openskills read ui-ux-spec-genome
+npx openskills@1.5.0 list
+npx openskills@1.5.0 read ui-ux-spec-genome
 ```
 
 ### Option D: give your tool the GitHub link

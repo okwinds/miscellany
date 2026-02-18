@@ -18,7 +18,8 @@ Notes:
   - No directory layout is assumed; the scan covers the repo root with ignores applied.
   - Default ignores include common build/cache dirs and extraction output folders.
   - If --out already exists, the script refuses to overwrite it unless --force is provided.
-  - Use --ignore to add extra ignore patterns (comma-separated).
+  - Use --ignore to add extra ignore patterns (comma-separated). Whitespace around patterns is trimmed.
+  - You can pass --ignore multiple times; patterns are merged.
 EOF
 }
 
@@ -44,6 +45,15 @@ use_default_ignore=1
 ignore_csv=""
 extra_globs=()
 
+trim() {
+  local s="$1"
+  # Leading trim
+  s="${s#"${s%%[![:space:]]*}"}"
+  # Trailing trim
+  s="${s%"${s##*[![:space:]]}"}"
+  printf "%s" "$s"
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help)
@@ -64,7 +74,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     --ignore)
-      ignore_csv="$2"
+      ignore_csv="${ignore_csv:+$ignore_csv,}$2"
       shift 2
       ;;
     --no-default-ignore)
@@ -151,6 +161,7 @@ fi
 if [[ -n "$ignore_csv" ]]; then
   IFS=',' read -r -a extra_ignores <<< "$ignore_csv"
   for pat in "${extra_ignores[@]}"; do
+    pat="$(trim "$pat")"
     [[ -z "$pat" ]] && continue
     rg_ignore_args+=("-g" "!$pat")
   done

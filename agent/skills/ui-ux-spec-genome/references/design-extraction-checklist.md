@@ -14,8 +14,13 @@ Use this section when the spec must enable pixel-level replication without readi
 - Hard rule: no placeholders
   - Disallow: “见源码/参考源码/源码片段”, TODO/TBD/FIXME, standalone `...`/`…`
   - If the literal UI copy contains an ellipsis, quote it explicitly as a literal string in the spec
+- Hard rule: no dependency language
+  - Disallow: “参考 demo/见 demo/对齐 demo/以实现为准/align with demo/reference implementation”
+  - The spec must be self-contained: a team should not need a repo, screenshot, or any external reference to implement UI.
 - Deterministic inputs for dynamic UI
   - Provide mock data examples (JSON or tables) so list density, wrapping, and ordering match the current UI
+- Coverage matrix (recommended for replica)
+  - Include a page/component coverage matrix and a “known gaps” checklist so reviewers can see what is missing at a glance.
 
 ## 1. Foundations (tokens)
 - Colors: base, semantic, states, dark mode mapping, overlays, charts, contrast notes
@@ -107,6 +112,12 @@ Replica add-ons (recommended):
 - table density and column behavior
 - density modes (compact/comfortable)
 - RTL support and browser-specific hacks
+- Flex height chain (fillHeight / “占满剩余高度”)
+  - For any UI that must “fill remaining height + internal scroll”, specify the full height chain explicitly:
+    - which parent owns the height (`flex` container) and must include `min-h-0`
+    - which child is `flex-1 min-h-0`
+    - which node owns scrolling (`overflow-auto`) and which nodes must be `overflow-hidden` to prevent border-radius bleed
+  - Add an acceptance check: no “half-blank viewport”, no overflow outside card/dialog bounds.
 
 ## 14. Recommended output folders
 - 01_Foundation

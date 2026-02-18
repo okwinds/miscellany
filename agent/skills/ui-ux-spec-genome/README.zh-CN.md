@@ -59,8 +59,9 @@ openskills 前置条件：
 从可 clone 的仓库 URL 安装（不要用 GitHub 的 `.../tree/...` 子目录链接）：
 
 ```bash
-# 建议固定版本，例如：npx openskills@0.0.0 install ...
-npx openskills install https://github.com/okwinds/miscellany
+# 建议固定版本，降低供应链漂移风险
+# 示例固定版本：1.5.0
+npx openskills@1.5.0 install https://github.com/okwinds/miscellany
 ```
 
 按提示选择 `ui-ux-spec-genome`（仓库路径：`agent/skills/ui-ux-spec-genome`）。
@@ -68,8 +69,8 @@ npx openskills install https://github.com/okwinds/miscellany
 验证 / 回读：
 
 ```bash
-npx openskills list
-npx openskills read ui-ux-spec-genome
+npx openskills@1.5.0 list
+npx openskills@1.5.0 read ui-ux-spec-genome
 ```
 
 ### 方式 D：让工具直接使用 GitHub 链接

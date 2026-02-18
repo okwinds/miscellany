@@ -82,7 +82,7 @@ if [[ $replica -eq 1 ]]; then
 
 This guide defines the stricter bar for replication-grade UI specs: a team can recreate the current UI pixel-for-pixel using the spec alone (no source code reading).
 
-## Baseline (single source of truth)
+## Baseline (single baseline)
 - Browser + version:
 - Viewport (px) + device pixel ratio:
 - Zoom level:
@@ -96,6 +96,8 @@ This guide defines the stricter bar for replication-grade UI specs: a team can r
   - Disallow: unfinished/task markers (work-in-progress notes)
   - Disallow: standalone ... / … used as filler (only allowed if it is literal UI copy and explicitly quoted)
   - If the literal UI copy contains an ellipsis, quote it explicitly as a literal string.
+- No dependency language:
+  - Disallow: any instruction that requires consulting a repo, screenshot, or reference implementation to implement UI (e.g. “参考 demo/见实现/以实现为准”).
 - Exact microcopy:
   - Every UI-visible string is exact (no truncation, no paraphrase).
 - Implementable details for every described UI:
@@ -109,11 +111,46 @@ This guide defines the stricter bar for replication-grade UI specs: a team can r
 2) Fill in foundations first (tokens + global styles + baseline).
 3) Write components/pages as implementable blocks.
 4) During drafting, templates start empty. Use non-strict lint first, then strict:
-   - bash scripts/lint_replica_spec.sh --root <spec_root> --non-strict
+   - bash scripts/lint_replica_spec.sh --root <spec_root> --non-strict --warn-only
    - bash scripts/lint_replica_spec.sh --root <spec_root>
 EOF
     echo "write: $guide_path"
   fi
+fi
+
+if [[ $replica -eq 1 ]]; then
+  write_file "$out_root/00_Guides/COVERAGE.md" \
+"# Coverage Matrix (Replica / Pixel-Clone)
+
+Use this file to prevent missing specs. Replica lint passing is necessary but not sufficient: the goal is implementable coverage.
+
+## 1) Pages coverage
+
+Status values: \`Missing | Draft | Implementable | Replica\`
+
+| Page | Spec path | Pixel structure | Interaction/keyboard | A11y | Fixtures | Regression notes | Status |
+|---|---|---|---|---|---|---|---|
+|  |  |  |  |  |  |  |  |
+
+## 2) Components coverage
+
+| Component | Spec path | DOM/Slots | Styles/pixels | State machine | Keyboard | A11y | Fixtures | Status |
+|---|---|---|---|---|---|---|---|---|
+|  |  |  |  |  |  |  |  |  |
+
+## 3) High-risk details checklist
+
+- [ ] Flex height chain for \`fillHeight\` UIs (who owns scroll, \`min-h-0\`, \`overflow\` boundaries)
+- [ ] Scroll locking + portals (modals/drawers/popovers/tooltips)
+- [ ] Focus management (trap, restore focus, focus-visible strategy)
+- [ ] ESC-to-close coverage + priority (nested popover vs dialog vs drawer)
+- [ ] Tooltip behavior (hover + keyboard focus)
+- [ ] Density/resolution modes and their global impact
+- [ ] Text overflow rules (single/multi-line, wrapping, truncation)
+
+## 4) Known gaps
+
+- [ ] <gap> (impact: ...; fix: ...; acceptance: ...)"
 fi
 
 if [[ $replica -eq 1 ]]; then

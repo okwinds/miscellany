@@ -47,6 +47,7 @@
   - `agent/skills/uiux-react-jsx-packager/`：把现有 React UI Demo 打包成单文件 `*.jsx`（默认导出根组件、运行时只依赖 React），内联 CSS/SVG/图片，用 state 实现导航，并提供本地校验脚本。
   - `agent/skills/agently-task-dev/`：Agently 框架专用开发技能，生成可运行代码 + 回归测试（验证 schema/ensure_keys 和流式响应 delta/instant/streaming_parse），支持 ToolExtension（Search/Browse/MCP）、TriggerFlow 编排、ChromaDB 知识库，以及 SSE/WS/HTTP 服务化。
   - `agent/skills/skill-create-flow/`：Skill 创建流程：从模糊想法到可测试的技能规格。适合创建基于流程的 Agent 技能（如方法论型、决策型、多步骤工作流），而非纯参考/查询型技能或简单命令。
+  - `agent/skills/skill-creator-cc/`：Skill 开发/评测工作台：用于从零创建或改进 skill，生成评测样例、对比 with-skill / baseline、用 review viewer 做人工审阅，并迭代优化 skill description 的触发效果。
   - `agent/skills/loopback/`：Loopback 迭代开发循环：受 Claude Code 的 Ralph Loop（`ralphloop`/`ralph-loop`）启发的 Codex 适配版，用“同一句 prompt 多轮迭代 + 停止契约”让任务更收敛。
   - `agent/skills/dayapp-mobile-push/`：通过 Day.app（Bark）发送一次关键移动端推送。适用于任务完成、失败、阻塞等需要立即提醒的场景，并支持静音时段。
   - `agent/skills/codex-tmux-echo/`：通用 tmux 交互编排 + 回传：启动交互式 CLI、发送按键、等待输出，并支持 worker 回传到 controller pane（避免靠 `sleep` 猜时序）。

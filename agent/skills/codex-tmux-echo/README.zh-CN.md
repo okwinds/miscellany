@@ -63,7 +63,7 @@ bash scripts/selftest.sh
 1) 启动调度侧 Codex：
 
 ```bash
-bash scripts/start_scheduler.sh --socket system --session scheduler --workdir /Users/okwinds/Files/工作/opensource
+bash scripts/start_scheduler.sh --socket system --session scheduler --workdir "$PWD"
 tmux attach -t scheduler
 ```
 
@@ -93,7 +93,7 @@ bash scripts/codex-tmux-echo --report-mode send '把结论发给调度侧继续�
 ```bash
 bash scripts/interactive_runner.sh \
   --session tmtest \
-  --workdir /Users/okwinds/Files/工作/opensource \
+  --workdir "$PWD" \
   --cmd 'codex --dangerously-bypass-approvals-and-sandbox --no-alt-screen' \
   --prompt 'hello，你好呀。请在完成后回传 DONE。' \
   --wait-pattern 'DONE' \

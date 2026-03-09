@@ -72,10 +72,10 @@ npx openskills read repo-compliance-audit
 
 建议在 skill 目录内运行脚本。
 
-在本仓库中：
+在已安装的 skill 目录中：
 
 ```bash
-cd agent/skills/repo-compliance-audit
+cd /path/to/repo-compliance-audit
 python3 scripts/audit_repo.py --repo . --out /tmp/repo-compliance-audit
 ```
 

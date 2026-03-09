@@ -1,5 +1,6 @@
 ---
 name: ui-ux-spec-genome
+version: 0.1.2
 description: "A portable, reproducible UI/UX spec standard: scan a frontend repo for UI sources and scaffold a ui-ux-spec documentation bundle (tokens, global styles, components, patterns, pages, a11y). Also supports plan-driven UI-only refactors based on an existing ui-ux-spec. Excludes business logic and domain workflows."
 ---
 

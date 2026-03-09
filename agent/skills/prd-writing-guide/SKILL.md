@@ -1,6 +1,6 @@
 ---
 name: prd-writing-guide
-version: "0.1.0"
+version: "0.1.1"
 description: "Write complete, unambiguous PRDs that development teams can implement without guesswork. Includes requirement discovery framework, structured documentation methodology, completeness checklists, and common pitfall avoidance. Use when: writing new PRDs, reviewing PRD drafts, validating requirement completeness, preparing for engineering handoff. Triggers: 'write PRD', '写PRD', '产品需求文档', '需求文档', '需求规格', '需求评审', '完善需求', 'create requirements doc', 'product requirements', 'feature spec', 'requirements document'. Anti-triggers: 'technical design doc', 'architecture design', 'implementation plan', 'API design', '架构设计', '技术方案', '实现方案', '接口设计'."
 license: MIT
 compatibility: "No system dependencies. Bash scripts optional for skeleton generation."

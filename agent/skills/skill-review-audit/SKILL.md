@@ -1,6 +1,6 @@
 ---
 name: skill-review-audit
-version: 0.1.1
+version: 0.1.2
 description: Use when a user asks to review, interpret, or audit an AI agent skill (SKILL.md plus bundled scripts/references/assets) for capabilities, triggering behavior, tool/command usage, safety & privacy risk, supply-chain provenance, quality gaps, and improvement recommendations; also use when validating a skill before installing or deploying it.
 ---
 

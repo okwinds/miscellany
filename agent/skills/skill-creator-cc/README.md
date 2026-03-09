@@ -77,22 +77,19 @@ The skill itself is driven by `SKILL.md`, but it also ships runnable helpers for
 Validate the copied/published skill:
 
 ```bash
-python3 agent/skills/skill-creator-cc/scripts/quick_validate.py agent/skills/skill-creator-cc
+python3 ./scripts/quick_validate.py .
 ```
 
 Package the skill as a `.skill` bundle:
 
 ```bash
-(
-  cd agent/skills/skill-creator-cc && \
-  python3 -m scripts.package_skill .
-)
+python3 -m scripts.package_skill .
 ```
 
 Generate a static review page from an eval workspace:
 
 ```bash
-python3 agent/skills/skill-creator-cc/eval-viewer/generate_review.py \
+python3 ./eval-viewer/generate_review.py \
   /path/to/skill-workspace/iteration-1 \
   --skill-name skill-creator-cc \
   --static /tmp/skill-creator-cc-review.html

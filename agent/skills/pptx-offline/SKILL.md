@@ -1,6 +1,6 @@
 ---
 name: pptx-offline
-version: 0.1.0
+version: 0.1.1
 description: PPTX 文档离线读写：解析/替换/重排/缩略图、OOXML 解包编辑回包，以及 html2pptx（HTML→PPT）工作流。适用于生成与维护演示文稿（依赖安装可能需要网络）。
 ---
 
@@ -26,7 +26,7 @@ You need raw XML access for: comments, speaker notes, slide layouts, animations,
 #### Unpacking a file
 `python ooxml/scripts/unpack.py <office_file> <output_dir>`
 
-**Note**: In this repo, the script lives at `agent/skills/pptx-offline/ooxml/scripts/unpack.py`.
+**Note**: In the skill workspace, the script lives at `./ooxml/scripts/unpack.py`.
 
 #### Key file structures
 * `ppt/presentation.xml` - Main presentation metadata and slide references
@@ -51,7 +51,7 @@ When creating a new PowerPoint presentation from scratch, use the **html2pptx** 
 Quick single-slide conversion (helper wrapper):
 
 ```bash
-node agent/skills/pptx-offline/scripts/html2pptx-local.cjs slide.html out.pptx
+node ./scripts/html2pptx-local.cjs slide.html out.pptx
 ```
 
 ### Design Principles
@@ -487,10 +487,10 @@ Dependencies are split into Python and Node.js parts.
 
 ### Node.js (for html2pptx)
 
-This repo includes a `package.json` under `agent/skills/pptx-offline/` so module resolution works reliably (avoid `npm -g` + global `require()` issues).
+This skill includes a local `./package.json` so module resolution works reliably (avoid `npm -g` + global `require()` issues).
 
 ```bash
-cd agent/skills/pptx-offline
+cd /path/to/pptx-offline
 npm i
 ```
 

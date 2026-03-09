@@ -73,7 +73,7 @@ Many tools require a restart / new session to re-scan skills.
 Run the bundled (read-only) scanner to quickly inventory a skill directory:
 
 ```bash
-bash agent/skills/skill-review-audit/scripts/scan_skill.sh agent/skills/headless-web-viewer
+bash ./scripts/scan_skill.sh /path/to/target-skill
 ```
 
 Treat the output as sensitive (it may surface tokens/keys depending on the target); redact before sharing.

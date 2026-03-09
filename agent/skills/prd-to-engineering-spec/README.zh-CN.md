@@ -73,11 +73,11 @@ npx openskills read prd-to-engineering-spec
 在仓库根目录执行，生成规范目录骨架（默认输出：`./engineering-spec`）：
 
 ```bash
-bash agent/skills/prd-to-engineering-spec/scripts/generate_spec_skeleton.sh
+bash ./scripts/generate_spec_skeleton.sh
 ```
 
 校验进行中的工程规格：
 
 ```bash
-bash agent/skills/prd-to-engineering-spec/scripts/validate_spec.sh engineering-spec
+bash ./scripts/validate_spec.sh engineering-spec
 ```

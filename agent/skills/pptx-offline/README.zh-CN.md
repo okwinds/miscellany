@@ -70,17 +70,17 @@ npx openskills read pptx-offline
 
 ## 用法
 
-把 `SKILL_DIR` 设置为你安装该技能的目录（例如 `agent/skills/pptx-offline`、`~/.claude/skills/pptx-offline`）：
+在已安装的 skill 目录内运行这些命令：
 
 ```bash
-SKILL_DIR=agent/skills/pptx-offline
+cd /path/to/pptx-offline
 
 # 提取文本到 markdown
 python -m markitdown path-to-file.pptx
 
 # OOXML 解包/回包
-python3 "$SKILL_DIR/ooxml/scripts/unpack.py" path-to-file.pptx unpacked-pptx
-python3 "$SKILL_DIR/ooxml/scripts/pack.py" unpacked-pptx out.pptx
+python3 ./ooxml/scripts/unpack.py path-to-file.pptx unpacked-pptx
+python3 ./ooxml/scripts/pack.py unpacked-pptx out.pptx
 ```
 
 ### HTML → PPT（html2pptx）
@@ -88,14 +88,12 @@ python3 "$SKILL_DIR/ooxml/scripts/pack.py" unpacked-pptx out.pptx
 推荐本地安装 Node 依赖（避免全局安装与 require 解析问题）：
 
 ```bash
-SKILL_DIR=agent/skills/pptx-offline
-cd "$SKILL_DIR"
+cd /path/to/pptx-offline
 npm i
-cd -
 ```
 
 单页 HTML 转 PPT：
 
 ```bash
-node "$SKILL_DIR/scripts/html2pptx-local.cjs" slide.html out.pptx
+node ./scripts/html2pptx-local.cjs slide.html out.pptx
 ```

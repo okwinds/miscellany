@@ -1,6 +1,6 @@
 ---
 name: dayapp-mobile-push
-version: 0.1.1
+version: 0.1.2
 author: 肆〇柒/ForOhZen
 description: Send a critical mobile push through Day.app (Bark) with one GET request. Use when a task finishes, fails, is blocked, or needs immediate alerting, and you should summarize task name and summary from current task context before sending.
 ---
@@ -18,7 +18,7 @@ description: Send a critical mobile push through Day.app (Bark) with one GET req
    - `tasksummary`：不超过 25 个中文字符，或不超过 50 个英文字符
 2. 读取 `config.json` 的 `deviceid`、`app_name` 与 `quiet_hours`。
 3. 若 `deviceid` 为空，立即提示用户并停止：
-   - 配置位置：`~/agent/skills/dayapp-mobile-push/config.json`
+   - 配置位置：当前技能目录下的 `./config.json`
    - 配置方式：把 `deviceid` 写入 `{"deviceid":"你的值"}`
    - 获取方式：在 App Store 安装 `Bark`，打开 App 即可看到并复制 `deviceid`
 4. 生成请求 URL：

@@ -77,10 +77,12 @@ Restart / open a new session so your tool re-scans skills, then ask in natural l
 
 ## Suggested usage
 
+Run these helpers from the installed skill directory.
+
 1) Create a repo snapshot:
 
 ```bash
-python3 agent/skills/repo-deep-dive-report/scripts/repo_snapshot.py --repo . --output docs/_repo_snapshot.md
+python3 ./scripts/repo_snapshot.py --repo . --output docs/_repo_snapshot.md
 ```
 
 2) Write your report in `docs/repo_review.md` (see `references/report_outline.md`).
@@ -88,7 +90,7 @@ python3 agent/skills/repo-deep-dive-report/scripts/repo_snapshot.py --repo . --o
 3) Render to standalone HTML:
 
 ```bash
-python3 agent/skills/repo-deep-dive-report/scripts/render_md_to_html.py \
+python3 ./scripts/render_md_to_html.py \
   --input docs/repo_review.md \
   --output docs/repo_review.html \
   --title "Repo Review"

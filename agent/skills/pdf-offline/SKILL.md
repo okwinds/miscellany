@@ -1,6 +1,6 @@
 ---
 name: pdf-offline
-version: 0.1.0
+version: 0.1.1
 description: PDF 文档离线读写与表单处理：提取文本/表格、合并拆分、生成 PDF、填写表单。适用于“本地处理/读取/生成 PDF 文件”（依赖安装可能需要网络）。
 ---
 
@@ -10,22 +10,24 @@ description: PDF 文档离线读写与表单处理：提取文本/表格、合�
 
 This guide covers essential PDF processing operations using Python libraries and command-line tools. For advanced features, JavaScript libraries, and detailed examples, see REFERENCE.md. If you need to fill out a PDF form, read FORMS.md and follow its instructions.
 
+Assume the skill directory itself is the working directory when running bundled files from this skill.
+
 ## Quick CLI (legacy doc_utils)
 
 This skill bundles a simple CLI (`doc_utils.py`) copied from the older `pdf` skill, so you can do common PDF operations quickly.
 
 ```bash
 # Read PDF → JSON
-python3 agent/skills/pdf-offline/doc_utils.py read path/to/file.pdf
+python3 ./doc_utils.py read path/to/file.pdf
 
 # Merge PDFs
-python3 agent/skills/pdf-offline/doc_utils.py merge merged.pdf a.pdf b.pdf
+python3 ./doc_utils.py merge merged.pdf a.pdf b.pdf
 ```
 
 Optional deps install helper (Python-only, no system packages):
 
 ```bash
-bash agent/skills/pdf-offline/install.sh
+bash ./install.sh
 ```
 
 ## Quick Start
@@ -182,6 +184,22 @@ story.append(Paragraph("Content for page 2", styles['Normal']))
 
 # Build PDF
 doc.build(story)
+```
+
+#### Subscripts and Superscripts
+
+**IMPORTANT**: Never use Unicode subscript/superscript characters directly in ReportLab output. Built-in fonts often miss those glyphs and render black boxes.
+
+Use ReportLab markup in `Paragraph` objects instead:
+
+```python
+from reportlab.platypus import Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+
+styles = getSampleStyleSheet()
+
+chemical = Paragraph("H<sub>2</sub>O", styles["Normal"])
+squared = Paragraph("x<super>2</super> + y<super>2</super>", styles["Normal"])
 ```
 
 ## Command-Line Tools

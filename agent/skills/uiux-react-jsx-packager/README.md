@@ -77,13 +77,13 @@ This skill is primarily an instruction set in `SKILL.md`, plus a couple of optio
 Runs a heuristic gate to catch common packaging violations (non-React imports, `require()`, dynamic `import()`, missing default export, asset imports, etc.):
 
 ```bash
-python3 agent/skills/uiux-react-jsx-packager/scripts/verify_singlefile_jsx.py /path/to/Merged.jsx
+python3 ./scripts/verify_singlefile_jsx.py /path/to/Merged.jsx
 ```
 
 Stricter mode (treat warnings as failures):
 
 ```bash
-python3 agent/skills/uiux-react-jsx-packager/scripts/verify_singlefile_jsx.py --strict /path/to/Merged.jsx
+python3 ./scripts/verify_singlefile_jsx.py --strict /path/to/Merged.jsx
 ```
 
 ### Runtime smoke preview (recommended)
@@ -91,7 +91,7 @@ python3 agent/skills/uiux-react-jsx-packager/scripts/verify_singlefile_jsx.py --
 Spin up an isolated Vite+React dev server under `/tmp` to catch “white screen” runtime errors early:
 
 ```bash
-NO_OPEN=1 PORT=5188 bash agent/skills/uiux-react-jsx-packager/scripts/preview_single_jsx_vite.sh /path/to/Merged.jsx
+NO_OPEN=1 PORT=5188 bash ./scripts/preview_single_jsx_vite.sh /path/to/Merged.jsx
 ```
 
 If the terminal shows `Port 5188 is in use, trying another one...`, always open the URL in the `Local:` line.

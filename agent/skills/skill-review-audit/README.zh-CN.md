@@ -73,7 +73,7 @@ npx openskills read skill-review-audit
 运行内置的（只读）扫描脚本，快速盘点一个 skill 目录：
 
 ```bash
-bash agent/skills/skill-review-audit/scripts/scan_skill.sh agent/skills/headless-web-viewer
+bash ./scripts/scan_skill.sh /path/to/target-skill
 ```
 
 请把输出当作敏感信息对待（取决于目标目录，可能会扫到 token/密钥等）；分享前务必脱敏/删改。

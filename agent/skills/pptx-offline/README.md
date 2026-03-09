@@ -70,17 +70,17 @@ Many tools require a restart / new session to re-scan skills.
 
 ## Usage
 
-Set `SKILL_DIR` to where you installed this skill (examples: `agent/skills/pptx-offline`, `~/.claude/skills/pptx-offline`):
+Run these commands from the installed skill directory:
 
 ```bash
-SKILL_DIR=agent/skills/pptx-offline
+cd /path/to/pptx-offline
 
 # Text extraction to markdown
 python -m markitdown path-to-file.pptx
 
 # OOXML workflow
-python3 "$SKILL_DIR/ooxml/scripts/unpack.py" path-to-file.pptx unpacked-pptx
-python3 "$SKILL_DIR/ooxml/scripts/pack.py" unpacked-pptx out.pptx
+python3 ./ooxml/scripts/unpack.py path-to-file.pptx unpacked-pptx
+python3 ./ooxml/scripts/pack.py unpacked-pptx out.pptx
 ```
 
 ### HTML → PPT (html2pptx)
@@ -88,14 +88,12 @@ python3 "$SKILL_DIR/ooxml/scripts/pack.py" unpacked-pptx out.pptx
 Install Node deps locally (recommended):
 
 ```bash
-SKILL_DIR=agent/skills/pptx-offline
-cd "$SKILL_DIR"
+cd /path/to/pptx-offline
 npm i
-cd -
 ```
 
 Then convert a single HTML slide:
 
 ```bash
-node "$SKILL_DIR/scripts/html2pptx-local.cjs" slide.html out.pptx
+node ./scripts/html2pptx-local.cjs slide.html out.pptx
 ```

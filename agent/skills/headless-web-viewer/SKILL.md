@@ -1,6 +1,6 @@
 ---
 name: headless-web-viewer
-version: 0.1.0
+version: 0.1.1
 description: Render and view webpages using a headless browser (Playwright) to fetch JS-rendered HTML, extract visible text, and optionally save full-page screenshots. Use when a user asks to “无头浏览器打开/查看网页”, needs the rendered DOM instead of raw curl HTML, or wants a screenshot of a page.
 ---
 
@@ -11,7 +11,7 @@ description: Render and view webpages using a headless browser (Playwright) to f
 ### Render + save artifacts
 
 ```bash
-node agent/skills/headless-web-viewer/scripts/render_url_playwright.mjs '<URL>' \
+node ./scripts/render_url_playwright.mjs '<URL>' \
   --out-html /tmp/page.html \
   --out-text /tmp/page.txt \
   --out-screenshot /tmp/page.png
@@ -20,7 +20,7 @@ node agent/skills/headless-web-viewer/scripts/render_url_playwright.mjs '<URL>' 
 ### Print to stdout (pipe-friendly)
 
 ```bash
-node agent/skills/headless-web-viewer/scripts/render_url_playwright.mjs '<URL>' --print text
+node ./scripts/render_url_playwright.mjs '<URL>' --print text
 ```
 
 ## Dependencies

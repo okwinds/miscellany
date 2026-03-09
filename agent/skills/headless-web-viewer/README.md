@@ -80,10 +80,10 @@ Restart / open a new session so your tool re-scans skills, then ask in natural l
 
 ## Usage
 
-From the repo root:
+From the installed skill directory:
 
 ```bash
-node agent/skills/headless-web-viewer/scripts/render_url_playwright.mjs 'https://example.com' \
+node ./scripts/render_url_playwright.mjs 'https://example.com' \
   --out-html /tmp/page.html \
   --out-text /tmp/page.txt \
   --out-screenshot /tmp/page.png
@@ -92,7 +92,7 @@ node agent/skills/headless-web-viewer/scripts/render_url_playwright.mjs 'https:/
 Pipe-friendly text output:
 
 ```bash
-node agent/skills/headless-web-viewer/scripts/render_url_playwright.mjs 'https://example.com' --print text
+node ./scripts/render_url_playwright.mjs 'https://example.com' --print text
 ```
 
 ## Dependencies
@@ -105,7 +105,7 @@ This skill needs Playwright available at runtime.
 Install in this skill directory:
 
 ```bash
-cd agent/skills/headless-web-viewer
+cd /path/to/headless-web-viewer
 npm ci
 ```
 

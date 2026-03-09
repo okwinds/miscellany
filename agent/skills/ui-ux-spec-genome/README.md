@@ -93,23 +93,23 @@ Restart / open a new session so your tool re-scans skills.
 ### Scan UI sources
 
 ```bash
-bash agent/skills/ui-ux-spec-genome/scripts/scan_ui_sources.sh --root /path/to/repo --out /tmp/ui_sources.md
+bash ./scripts/scan_ui_sources.sh --root /path/to/repo --out /tmp/ui_sources.md
 ```
 
 ### Scaffold `ui-ux-spec/`
 
 ```bash
-bash agent/skills/ui-ux-spec-genome/scripts/generate_output_skeleton.sh ./ui-ux-spec
+bash ./scripts/generate_output_skeleton.sh ./ui-ux-spec
 ```
 
 For replication-grade (“pixel-clone”) specs:
 
 ```bash
-bash agent/skills/ui-ux-spec-genome/scripts/generate_output_skeleton.sh ./ui-ux-spec --replica
+bash ./scripts/generate_output_skeleton.sh ./ui-ux-spec --replica
 # During drafting, templates will be empty: use non-strict first.
-bash agent/skills/ui-ux-spec-genome/scripts/lint_replica_spec.sh --root ./ui-ux-spec --non-strict
+bash ./scripts/lint_replica_spec.sh --root ./ui-ux-spec --non-strict
 # Before claiming "replica-grade done", strict lint must pass.
-bash agent/skills/ui-ux-spec-genome/scripts/lint_replica_spec.sh --root ./ui-ux-spec
+bash ./scripts/lint_replica_spec.sh --root ./ui-ux-spec
 ```
 
 ## Notes

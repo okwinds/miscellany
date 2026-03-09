@@ -71,10 +71,10 @@ Many coding tools can install/load skills directly from a GitHub/Git URL. If you
 From this repo root (or from wherever you installed the skill):
 
 ```bash
-bash agent/skills/prd-writing-guide/scripts/generate_prd_skeleton.sh ./docs/prd "User Dashboard Redesign"
+bash ./scripts/generate_prd_skeleton.sh ./docs/prd "User Dashboard Redesign"
 ```
 
-Then fill in the generated Markdown files and validate completeness using the checklists in `agent/skills/prd-writing-guide/references/`.
+Then fill in the generated Markdown files and validate completeness using the checklists in `./references/`.
 
 ### After install
 

@@ -1,6 +1,6 @@
 ---
 name: skill-creator-cc
-version: 0.1.0
+version: 0.1.1
 description: Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, update or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.
 compatibility: Requires Python 3 plus filesystem write access. Trigger evaluation requires the `claude` CLI; description optimization also requires Anthropic API access and network egress. Interactive review works best with a local browser.
 ---

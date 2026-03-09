@@ -70,19 +70,19 @@ Many tools require a restart / new session to re-scan skills.
 
 ## Usage
 
-Set `SKILL_DIR` to where you installed this skill (examples: `agent/skills/pdf-offline`, `~/.claude/skills/pdf-offline`):
+Run bundled helpers from inside the installed skill directory:
 
 ```bash
-SKILL_DIR=agent/skills/pdf-offline
+cd /path/to/pdf-offline
 
 # (Optional) install Python deps for the bundled CLI helper
-bash "$SKILL_DIR/install.sh"
+bash ./install.sh
 
 # Read PDF → JSON
-python3 "$SKILL_DIR/doc_utils.py" read path/to/file.pdf
+python3 ./doc_utils.py read path/to/file.pdf
 
 # Merge PDFs
-python3 "$SKILL_DIR/doc_utils.py" merge merged.pdf a.pdf b.pdf
+python3 ./doc_utils.py merge merged.pdf a.pdf b.pdf
 ```
 
-For form-specific workflows (bounding boxes, field extraction, etc.), see `FORMS.md` and scripts under `scripts/`.
+For form-specific workflows (bounding boxes, field extraction, etc.), see `FORMS.md` and scripts under `./scripts/`.

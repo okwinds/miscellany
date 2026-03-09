@@ -71,5 +71,5 @@ Many tools require a restart/new session to rescan skills.
 
 ## Usage
 
-- Open `agent/skills/prd-to-uiux-rd-spec/SKILL.md` and follow the “output contract” + step-by-step workflow.
+- Open `./SKILL.md` and follow the “output contract” + step-by-step workflow.
 - If you use OpenSkills, load it with `npx openskills read prd-to-uiux-rd-spec`.

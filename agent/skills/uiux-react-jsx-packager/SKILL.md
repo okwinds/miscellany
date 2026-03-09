@@ -1,7 +1,7 @@
 ---
 name: uiux-react-jsx-packager
 description: Package an existing React UI/UX demo into a single self-contained .jsx file with default-export root component, zero third-party runtime dependencies (no react-router/lucide/echarts/etc.), in-file styles (style tag or inline style objects), inline SVG icons, embedded or placeholder images, and state-based navigation. Use when asked to “合并为单文件 JSX/单文件打包/one-file React/零外部依赖/内联 CSS/替换图标库/用 state 做路由/把 demo 打包成独立 JSX 文件”.
-version: 0.1.1
+version: 0.1.2
 author: 肆〇柒/ForOhZen
 ---
 

@@ -80,10 +80,10 @@ npx openskills read headless-web-viewer
 
 ## 用法
 
-在仓库根目录执行：
+在已安装的 skill 目录执行：
 
 ```bash
-node agent/skills/headless-web-viewer/scripts/render_url_playwright.mjs 'https://example.com' \
+node ./scripts/render_url_playwright.mjs 'https://example.com' \
   --out-html /tmp/page.html \
   --out-text /tmp/page.txt \
   --out-screenshot /tmp/page.png
@@ -92,7 +92,7 @@ node agent/skills/headless-web-viewer/scripts/render_url_playwright.mjs 'https:/
 只输出文本（方便管道处理）：
 
 ```bash
-node agent/skills/headless-web-viewer/scripts/render_url_playwright.mjs 'https://example.com' --print text
+node ./scripts/render_url_playwright.mjs 'https://example.com' --print text
 ```
 
 ## 依赖说明
@@ -105,7 +105,7 @@ node agent/skills/headless-web-viewer/scripts/render_url_playwright.mjs 'https:/
 在技能目录安装依赖：
 
 ```bash
-cd agent/skills/headless-web-viewer
+cd /path/to/headless-web-viewer
 npm ci
 ```
 

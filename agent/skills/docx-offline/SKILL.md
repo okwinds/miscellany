@@ -1,6 +1,6 @@
 ---
 name: docx-offline
-version: 0.1.0
+version: 0.1.1
 description: DOCX 文档离线读写：提取/分析、OOXML 解包编辑回包、批注与修订（tracked changes/redlining）。适用于合同/制度/论文等需要保留格式与修订痕迹的场景（依赖安装可能需要网络）。
 ---
 

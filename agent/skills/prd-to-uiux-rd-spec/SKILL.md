@@ -1,6 +1,6 @@
 ---
 name: prd-to-uiux-rd-spec
-version: "0.1.0"
+version: "0.1.1"
 description: 从产品 PRD 产出“复刻级可落地”的 UI/UX 研发规格文档包（目录同构骨架、公共基座、组件/页面契约、覆盖映射、索引与 worklog）。适用于需要把 PRD 转成前端可复刻实现的规格文档、UI/UX 研发规格、界面契约与验收标准的场景；避免用于只要视觉灵感/纯 UI 赏析或直接写代码实现的请求。
 compatibility: 适用于能在仓库内写入 Markdown 文件的 Agent/开发者；默认不要求网络；默认不写业务代码，只输出规格文档与索引/记录。
 metadata:

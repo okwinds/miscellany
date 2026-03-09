@@ -110,7 +110,7 @@ If your runner supports slash commands from `commands/`:
 If your runner does **not** support slash commands, you can run the scripts directly from your project root:
 
 ```bash
-bash agent/skills/loopback/scripts/setup-loopback.sh \
+bash ./scripts/setup-loopback.sh \
   "Fix X. When done, output <promise>DONE</promise>." \
   --completion-promise "DONE" \
   --max-iterations 10

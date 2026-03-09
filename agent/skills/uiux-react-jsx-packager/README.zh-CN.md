@@ -77,13 +77,13 @@ npx openskills read uiux-react-jsx-packager
 用启发式规则检查常见违规项（非 React import、`require()`、动态 `import()`、缺少 default export、资产导入等）：
 
 ```bash
-python3 agent/skills/uiux-react-jsx-packager/scripts/verify_singlefile_jsx.py /path/to/Merged.jsx
+python3 ./scripts/verify_singlefile_jsx.py /path/to/Merged.jsx
 ```
 
 更严格模式（把 warning 当作 fail）：
 
 ```bash
-python3 agent/skills/uiux-react-jsx-packager/scripts/verify_singlefile_jsx.py --strict /path/to/Merged.jsx
+python3 ./scripts/verify_singlefile_jsx.py --strict /path/to/Merged.jsx
 ```
 
 ### 运行时 smoke 预览（推荐）
@@ -91,7 +91,7 @@ python3 agent/skills/uiux-react-jsx-packager/scripts/verify_singlefile_jsx.py --
 在 `/tmp` 下创建隔离的 Vite+React 预览工程，用来尽早抓到“白屏/运行时异常”：
 
 ```bash
-NO_OPEN=1 PORT=5188 bash agent/skills/uiux-react-jsx-packager/scripts/preview_single_jsx_vite.sh /path/to/Merged.jsx
+NO_OPEN=1 PORT=5188 bash ./scripts/preview_single_jsx_vite.sh /path/to/Merged.jsx
 ```
 
 如果终端出现 `Port 5188 is in use, trying another one...`，说明端口被占用并自动切换；请以 `Local:` 行的 URL 为准。

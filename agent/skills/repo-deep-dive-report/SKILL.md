@@ -1,6 +1,6 @@
 ---
 name: repo-deep-dive-report
-version: 0.1.0
+version: 0.1.1
 description: End-to-end source code repository deep dive and review. Use when you need to understand a repo’s architecture, core abstractions, entrypoints and execution flow, extension points, and operational/developer setup; and when you must deliver a structured report (Markdown + standalone HTML) with diagrams (Mermaid), actionable recommendations, and a scored evaluation.
 ---
 

@@ -71,10 +71,10 @@ npx openskills read prd-writing-guide
 在仓库根目录执行（或在你安装 skill 的目录执行）：
 
 ```bash
-bash agent/skills/prd-writing-guide/scripts/generate_prd_skeleton.sh ./docs/prd "User Dashboard Redesign"
+bash ./scripts/generate_prd_skeleton.sh ./docs/prd "User Dashboard Redesign"
 ```
 
-随后补全生成的 Markdown 文件，并用 `agent/skills/prd-writing-guide/references/` 里的检查清单做完整性校验。
+随后补全生成的 Markdown 文件，并用 `./references/` 里的检查清单做完整性校验。
 
 ### 安装完成后
 

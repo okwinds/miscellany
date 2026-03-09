@@ -1,6 +1,6 @@
 ---
 name: repo-compliance-audit
-version: 0.1.0
+version: 0.1.1
 description: 对任意代码仓库进行合规审计并生成可取证报告（Markdown + JSON findings），覆盖“是否遵循 AGENTS.md/仓库规则/用户指令”“文档索引/规格/工作记录/任务总结”“TDD 与离线回归证据”“可复现性（.env.example 等）”“潜在密钥泄露与仓库卫生”等；并支持在**人类勾选 finding.id** 后执行选择性低风险整改（默认不改业务逻辑）。触发场景：仓库交付前自检、接手陌生仓库、需要合规审计报告、需要把整改条目做成可选择的执行清单。
 ---
 
@@ -82,6 +82,6 @@ python3 scripts/remediate_repo.py \
 
 ## 资源
 
-- `skills/repo-compliance-audit/scripts/audit_repo.py`：审计入口
-- `skills/repo-compliance-audit/scripts/remediate_repo.py`：整改入口（按 `finding.id` 选择性执行）
-- `skills/repo-compliance-audit/references/finding-catalog.md`：finding ID 目录（扩展/对齐口径用）
+- `./scripts/audit_repo.py`：审计入口
+- `./scripts/remediate_repo.py`：整改入口（按 `finding.id` 选择性执行）
+- `./references/finding-catalog.md`：finding ID 目录（扩展/对齐口径用）

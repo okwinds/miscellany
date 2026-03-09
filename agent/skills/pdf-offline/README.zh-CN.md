@@ -70,19 +70,19 @@ npx openskills read pdf-offline
 
 ## 用法
 
-把 `SKILL_DIR` 设置为你安装该技能的目录（例如 `agent/skills/pdf-offline`、`~/.claude/skills/pdf-offline`）：
+在已安装的 skill 目录内运行附带脚本：
 
 ```bash
-SKILL_DIR=agent/skills/pdf-offline
+cd /path/to/pdf-offline
 
 # （可选）安装本技能附带 CLI 的 Python 依赖
-bash "$SKILL_DIR/install.sh"
+bash ./install.sh
 
 # 读取 PDF → JSON
-python3 "$SKILL_DIR/doc_utils.py" read path/to/file.pdf
+python3 ./doc_utils.py read path/to/file.pdf
 
 # 合并 PDF
-python3 "$SKILL_DIR/doc_utils.py" merge merged.pdf a.pdf b.pdf
+python3 ./doc_utils.py merge merged.pdf a.pdf b.pdf
 ```
 
-如需“表单字段/标注框”等工作流，请直接看 `FORMS.md` 与 `scripts/` 下的脚本。
+如需“表单字段/标注框”等工作流，请直接看 `FORMS.md` 与 `./scripts/` 下的脚本。

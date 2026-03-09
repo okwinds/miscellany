@@ -70,17 +70,17 @@ Many tools require a restart / new session to re-scan skills.
 
 ## Usage
 
-Set `SKILL_DIR` to where you installed this skill (examples: `agent/skills/docx-offline`, `~/.claude/skills/docx-offline`):
+Run these commands from the installed skill directory:
 
 ```bash
-SKILL_DIR=agent/skills/docx-offline
+cd /path/to/docx-offline
 
 # Text extraction (preserve tracked changes)
 pandoc --track-changes=all path-to-file.docx -o out.md
 
 # OOXML workflow
-python3 "$SKILL_DIR/ooxml/scripts/unpack.py" path-to-file.docx unpacked-docx
-python3 "$SKILL_DIR/ooxml/scripts/pack.py" unpacked-docx out.docx
+python3 ./ooxml/scripts/unpack.py path-to-file.docx unpacked-docx
+python3 ./ooxml/scripts/pack.py unpacked-docx out.docx
 ```
 
 For tracked changes / comments workflows, follow `ooxml.md`.

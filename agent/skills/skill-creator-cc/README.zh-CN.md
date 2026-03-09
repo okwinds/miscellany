@@ -77,22 +77,19 @@ skill 的主入口仍然是 `SKILL.md`，但它同时附带了几个可直接运
 校验已复制/发布的 skill：
 
 ```bash
-python3 agent/skills/skill-creator-cc/scripts/quick_validate.py agent/skills/skill-creator-cc
+python3 ./scripts/quick_validate.py .
 ```
 
 打包成 `.skill` 分发文件：
 
 ```bash
-(
-  cd agent/skills/skill-creator-cc && \
-  python3 -m scripts.package_skill .
-)
+python3 -m scripts.package_skill .
 ```
 
 从评测 workspace 生成静态评审页：
 
 ```bash
-python3 agent/skills/skill-creator-cc/eval-viewer/generate_review.py \
+python3 ./eval-viewer/generate_review.py \
   /path/to/skill-workspace/iteration-1 \
   --skill-name skill-creator-cc \
   --static /tmp/skill-creator-cc-review.html

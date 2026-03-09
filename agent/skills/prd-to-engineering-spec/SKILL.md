@@ -2,7 +2,7 @@
 name: prd-to-engineering-spec
 description: "Transform PRD (Product Requirements Document) into actionable engineering specifications. Creates detailed technical specs that developers can implement step-by-step without ambiguity. Covers data modeling, API design, business logic, security architecture, deployment, and agent system design. Use when: converting product requirements to technical specs, validating PRD completeness, planning technical implementation, creating task breakdowns, or defining test specifications. Triggers: 'PRD to spec', 'convert requirements', 'technical spec from PRD', 'engineering doc from requirements', 'validate PRD'."
 license: MIT
-version: "0.1.1"
+version: "0.1.2"
 compatibility: "Requires bash for validation scripts. No external dependencies."
 metadata:
   author: 肆〇柒/ForOhZen

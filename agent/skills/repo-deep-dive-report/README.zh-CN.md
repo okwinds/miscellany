@@ -77,10 +77,12 @@ npx openskills read repo-deep-dive-report
 
 ## 推荐用法
 
+请在已安装的 skill 目录内运行这些辅助脚本。
+
 1) 先生成仓库快照（辅助走读与引用证据）：
 
 ```bash
-python3 agent/skills/repo-deep-dive-report/scripts/repo_snapshot.py --repo . --output docs/_repo_snapshot.md
+python3 ./scripts/repo_snapshot.py --repo . --output docs/_repo_snapshot.md
 ```
 
 2) 按 `references/report_outline.md` 的结构在 `docs/repo_review.md` 编写报告。
@@ -88,7 +90,7 @@ python3 agent/skills/repo-deep-dive-report/scripts/repo_snapshot.py --repo . --o
 3) 渲染成离线 HTML：
 
 ```bash
-python3 agent/skills/repo-deep-dive-report/scripts/render_md_to_html.py \
+python3 ./scripts/render_md_to_html.py \
   --input docs/repo_review.md \
   --output docs/repo_review.html \
   --title "Repo Review"

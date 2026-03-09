@@ -70,11 +70,11 @@ Many tools require a restart / new session to re-scan skills.
 
 ## Usage
 
-This skill ships a formula recalculation + error scan script (requires `soffice` from LibreOffice on `PATH`):
+This skill ships a formula recalculation + error scan script (requires `soffice` from LibreOffice on `PATH`). Run it from the installed skill directory:
 
 ```bash
-SKILL_DIR=agent/skills/xlsx-offline
-python3 "$SKILL_DIR/recalc.py" output.xlsx 30
+cd /path/to/xlsx-offline
+python3 ./recalc.py output.xlsx 30
 ```
 
 Notes:

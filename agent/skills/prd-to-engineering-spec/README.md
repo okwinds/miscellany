@@ -73,11 +73,11 @@ Many tools require a restart / new session to re-scan skills.
 From this repo root, generate the folder skeleton (default output: `./engineering-spec`):
 
 ```bash
-bash agent/skills/prd-to-engineering-spec/scripts/generate_spec_skeleton.sh
+bash ./scripts/generate_spec_skeleton.sh
 ```
 
 Validate an in-progress spec:
 
 ```bash
-bash agent/skills/prd-to-engineering-spec/scripts/validate_spec.sh engineering-spec
+bash ./scripts/validate_spec.sh engineering-spec
 ```

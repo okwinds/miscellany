@@ -93,23 +93,23 @@ npx openskills@1.5.0 read ui-ux-spec-genome
 ### 扫描 UI 来源
 
 ```bash
-bash agent/skills/ui-ux-spec-genome/scripts/scan_ui_sources.sh --root /path/to/repo --out /tmp/ui_sources.md
+bash ./scripts/scan_ui_sources.sh --root /path/to/repo --out /tmp/ui_sources.md
 ```
 
 ### 生成 `ui-ux-spec/` 文档骨架
 
 ```bash
-bash agent/skills/ui-ux-spec-genome/scripts/generate_output_skeleton.sh ./ui-ux-spec
+bash ./scripts/generate_output_skeleton.sh ./ui-ux-spec
 ```
 
 如果要写“复刻级 / 像素级 1:1”的规格文档：
 
 ```bash
-bash agent/skills/ui-ux-spec-genome/scripts/generate_output_skeleton.sh ./ui-ux-spec --replica
+bash ./scripts/generate_output_skeleton.sh ./ui-ux-spec --replica
 # 草稿阶段模板字段通常为空：先用非严格模式
-bash agent/skills/ui-ux-spec-genome/scripts/lint_replica_spec.sh --root ./ui-ux-spec --non-strict
+bash ./scripts/lint_replica_spec.sh --root ./ui-ux-spec --non-strict
 # 交付前必须通过严格 lint
-bash agent/skills/ui-ux-spec-genome/scripts/lint_replica_spec.sh --root ./ui-ux-spec
+bash ./scripts/lint_replica_spec.sh --root ./ui-ux-spec
 ```
 
 ## 注意事项

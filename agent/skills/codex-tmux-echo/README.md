@@ -59,7 +59,7 @@ bash scripts/selftest.sh
 Natural-language dispatch (recommended when scheduler is always on system tmux):
 
 ```bash
-bash scripts/start_scheduler.sh --socket system --session scheduler --workdir /Users/okwinds/Files/工作/opensource
+bash scripts/start_scheduler.sh --socket system --session scheduler --workdir "$PWD"
 tmux attach -t scheduler
 
 # In the scheduler pane:

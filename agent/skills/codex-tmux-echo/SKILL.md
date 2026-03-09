@@ -1,6 +1,6 @@
 ---
 name: codex-tmux-echo
-version: 0.1.12
+version: 0.1.13
 author: 肆〇柒/ForOhZen
 description: 用 tmux 稳定驱动交互式 CLI：启动 session、发送按键、等待输出就绪，并支持 worker 向 controller pane 回传结果（backchannel）。
 ---
@@ -88,7 +88,7 @@ bash scripts/tmuxctl.sh --target "$SESSION" wait --pattern 'READY' --timeout 10
 ```bash
 bash scripts/interactive_runner.sh \
   --session tmtest \
-  --workdir /Users/okwinds/Files/工作/opensource \
+  --workdir "$PWD" \
   --cmd 'codex --dangerously-bypass-approvals-and-sandbox --no-alt-screen' \
   --prompt 'hello，你好呀。请在完成后回传 DONE。' \
   --wait-pattern 'DONE' \
@@ -100,7 +100,7 @@ bash scripts/interactive_runner.sh \
 1) 启动调度侧 Codex：
 
 ```bash
-bash scripts/start_scheduler.sh --socket system --session scheduler --workdir /Users/okwinds/Files/工作/opensource
+bash scripts/start_scheduler.sh --socket system --session scheduler --workdir "$PWD"
 tmux attach -t scheduler
 ```
 
@@ -112,10 +112,10 @@ bash scripts/codex-tmux-echo 'hello，你好呀'
 
 ### 4.2) 让 skill “全局可用”（可选）
 
-如果你的 Skill Runner 通过 `~/.claude/skills` 扫描 skills，可以在仓库根目录执行（复制安装，不使用软链接）：
+如果你的 Skill Runner 会扫描某个 skills 目录，可以在仓库根目录执行（复制安装，不使用软链接）：
 
 ```bash
-SKILLS_DIR=~/.claude/skills
+SKILLS_DIR=<skills-scan-dir>
 mkdir -p "$SKILLS_DIR"
 cp -R "$(pwd)/agent/skills/codex-tmux-echo" "$SKILLS_DIR/codex-tmux-echo"
 ```

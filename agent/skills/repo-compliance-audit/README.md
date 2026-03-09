@@ -72,10 +72,10 @@ Many tools require a restart / new session to re-scan skills.
 
 Run scripts from inside the skill directory.
 
-From this repo:
+From the installed skill directory:
 
 ```bash
-cd agent/skills/repo-compliance-audit
+cd /path/to/repo-compliance-audit
 python3 scripts/audit_repo.py --repo . --out /tmp/repo-compliance-audit
 ```
 

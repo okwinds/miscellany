@@ -110,7 +110,7 @@ npx openskills read loopback
 如果你的运行器 **不支持** slash command，也可以在项目根目录直接运行脚本：
 
 ```bash
-bash agent/skills/loopback/scripts/setup-loopback.sh \
+bash ./scripts/setup-loopback.sh \
   "修复 X。完成后输出 <promise>DONE</promise>。" \
   --completion-promise "DONE" \
   --max-iterations 10

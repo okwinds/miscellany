@@ -1,6 +1,6 @@
 ---
 name: agently-task-dev
-version: 0.1.0
+version: 0.1.1
 description: Use only when the user explicitly wants to build with the Agently framework (mentions Agently/agently/OpenAICompatible/TriggerFlow/ToolExtension/ChromaCollection, or says “用 Agently 做/用 agently 做”). Deliver runnable code plus regression tests validating schema/ensure_keys and streaming (delta/instant/streaming_parse), with optional tools (Search/Browse/MCP), TriggerFlow orchestration, KB (ChromaDB), and serviceization (SSE/WS/HTTP). Do not use for generic streaming/testing questions that are not about Agently, or for prompt-only writing without tests/structure.
 ---
 
@@ -58,9 +58,7 @@ description: Use only when the user explicitly wants to build with the Agently f
 用脚手架一次性生成“任务 + 测试 + OpenAI-compatible stub（离线）”：
 
 ```bash
-python3 ~/agent/skills/agently-task-dev/scripts/scaffold_task_with_tests.py my_task --out .
-# 或（Codex CLI 环境常见路径）：
-python3 ~/.codex/skills/agently-task-dev/scripts/scaffold_task_with_tests.py my_task --out .
+python3 ./scripts/scaffold_task_with_tests.py my_task --out .
 python -m pytest -q
 ```
 
@@ -375,12 +373,12 @@ Patterns can be mixed and matched as needed. Most skills combine patterns (e.g.,
 
 1) 在一个空目录里生成 demo（先预览，确认不会覆盖任何东西）：
 ```bash
-python3 ~/agent/skills/agently-task-dev/scripts/scaffold_task_with_tests.py demo_task --out . --dry-run
+python3 ./scripts/scaffold_task_with_tests.py demo_task --out . --dry-run
 ```
 
 2) 真正写入文件（默认拒绝覆盖；如需覆盖再加 `--force`）：
 ```bash
-python3 ~/agent/skills/agently-task-dev/scripts/scaffold_task_with_tests.py demo_task --out .
+python3 ./scripts/scaffold_task_with_tests.py demo_task --out .
 ```
 
 3) 在“能 import agently”的环境里跑离线回归：

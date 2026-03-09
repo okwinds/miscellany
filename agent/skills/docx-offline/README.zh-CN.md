@@ -70,17 +70,17 @@ npx openskills read docx-offline
 
 ## 用法
 
-把 `SKILL_DIR` 设置为你安装该技能的目录（例如 `agent/skills/docx-offline`、`~/.claude/skills/docx-offline`）：
+在已安装的 skill 目录内运行这些命令：
 
 ```bash
-SKILL_DIR=agent/skills/docx-offline
+cd /path/to/docx-offline
 
 # 提取文本（保留修订痕迹）
 pandoc --track-changes=all path-to-file.docx -o out.md
 
 # OOXML 解包/回包
-python3 "$SKILL_DIR/ooxml/scripts/unpack.py" path-to-file.docx unpacked-docx
-python3 "$SKILL_DIR/ooxml/scripts/pack.py" unpacked-docx out.docx
+python3 ./ooxml/scripts/unpack.py path-to-file.docx unpacked-docx
+python3 ./ooxml/scripts/pack.py unpacked-docx out.docx
 ```
 
 如需“批注/修订（tracked changes）”的规范操作，请按 `ooxml.md` 的流程走。

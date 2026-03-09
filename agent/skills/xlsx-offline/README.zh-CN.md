@@ -70,11 +70,11 @@ npx openskills read xlsx-offline
 
 ## 用法
 
-本技能内置“公式重算 + 错误扫描”脚本（需要 LibreOffice 的 `soffice` 在 `PATH` 中）：
+本技能内置“公式重算 + 错误扫描”脚本（需要 LibreOffice 的 `soffice` 在 `PATH` 中）。请在已安装的 skill 目录内运行：
 
 ```bash
-SKILL_DIR=agent/skills/xlsx-offline
-python3 "$SKILL_DIR/recalc.py" output.xlsx 30
+cd /path/to/xlsx-offline
+python3 ./recalc.py output.xlsx 30
 ```
 
 说明：

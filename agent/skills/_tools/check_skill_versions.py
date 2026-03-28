@@ -105,7 +105,25 @@ def _parse_semver(version: str) -> tuple[int, int, int]:
     return (int(m.group(1)), int(m.group(2)), int(m.group(3)))
 
 
-def _changed_skills(skills_dir: str, base: str, head: str) -> set[str]:
+def _ref_exists(ref: str) -> bool:
+    """Check if a git ref/commit exists in the repository."""
+    proc = subprocess.run(
+        ["git", "cat-file", "-t", ref],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        check=False,
+    )
+    return proc.returncode == 0
+
+
+def _changed_skills(skills_dir: str, base: str, head: str) -> set[str] | None:
+    """Return changed skills, or None if base ref doesn't exist (e.g., after force push)."""
+    # Check if base ref exists (may not exist after force push)
+    if not _ref_exists(base):
+        print(f"warning: base ref {base} not found, skipping change detection", file=sys.stderr)
+        return None
+
     if head.upper() in {"WORKTREE", "WORKING_TREE"}:
         diff = _run_git(["diff", "--name-only", base, "--", skills_dir])
     else:
@@ -168,6 +186,16 @@ def main() -> int:
             errors.append(f"{skill.name}: invalid/missing version at head: {exc}")
 
     changed = _changed_skills(skills_dir, args.base, args.head)
+    if changed is None:
+        # Base ref doesn't exist (e.g., after force push). Only validate version format.
+        if errors:
+            print("Skill version check failed:\n", file=sys.stderr)
+            for err in errors:
+                print(f"- {err}", file=sys.stderr)
+            return 1
+        print("warning: skipped version bump check (base ref not available)", file=sys.stderr)
+        return 0
+
     if changed:
         for skill_name in sorted(changed):
             skill_md_path = os.path.join(skills_dir, skill_name, "SKILL.md")

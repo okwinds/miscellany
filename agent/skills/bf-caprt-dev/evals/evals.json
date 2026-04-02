@@ -1,0 +1,144 @@
+{
+  "skill_name": "bf-caprt-dev",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "帮我用 capability-runtime 做一个客服质检 agent，默认走 skills-first，最后我希望通过 Runtime.run_structured() 拿到稳定 JSON 结果，并保留 NodeReport 作为审计证据。",
+      "expected_output": "应触发 bf-caprt-dev，并把任务识别为 Greenfield；主路径围绕 Runtime 入口、AgentSpec、skills-first、run_structured、NodeReport 展开。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 应该触发",
+        "明确判断该任务属于 Greenfield",
+        "明确把 Runtime 作为业务入口，而不是改写成上游原生实现",
+        "明确建议通过 AgentSpec 和 Runtime.run_structured 落地结构化结果"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "我已经有几个业务 skills，想通过 WorkflowSpec 把它们编排成一个能力流，统一用 capability-runtime 注册、校验和执行。请直接给我落地实现思路。",
+      "expected_output": "应触发 bf-caprt-dev，并把任务识别为 Greenfield；强调 Workflow 只编排 Agent/Workflow，不直接编排底层 Skill 节点。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 应该触发",
+        "明确判断该任务属于 Greenfield",
+        "明确区分 skill 是能力来源，workflow 编排的是 Agent 或 Workflow",
+        "明确指出 Workflow 不应直接编排底层 Skill 节点"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "我先准备业务 SKILL.md bundle 和 overlay，再想用 capability-runtime 包一个可执行 agent，后面再决定要不要继续编排成 workflow。请帮我定落地顺序。",
+      "expected_output": "应触发 bf-caprt-dev，并把任务识别为 Greenfield；明确 skill/agent/workflow 的三元分工，同时保持 Runtime 为执行入口。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 应该触发",
+        "明确判断该任务属于 Greenfield",
+        "明确区分 skill、agent、workflow 三种形态各自的职责",
+        "明确指出 skills 依赖上游真相源，但业务执行入口仍是 Runtime"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "我想做一个父 agent，在运行中通过 invoke_capability 调一个子 agent，但对外仍然只暴露 capability-runtime 的 Runtime 入口。你帮我设计实现路径和验收点。",
+      "expected_output": "应触发 bf-caprt-dev，并把任务识别为 Greenfield；应路由到 invoke_capability 模式，而不是建议直接绕开 Runtime 做子调用。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 应该触发",
+        "明确保持 Runtime 为对外业务入口",
+        "明确建议使用 make_invoke_capability_tool 和 allowlist",
+        "明确要求通过 NodeReport.tool_calls 验证子调用证据"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "我要把一个 capability-runtime agent 暴露成服务调用入口，并且支持 session continuity。请优先告诉我 RuntimeServiceFacade 和 RuntimeSession 应该怎么接，不要先谈底层 provider。",
+      "expected_output": "应触发 bf-caprt-dev，并把任务路由到 host/service 场景；优先围绕 RuntimeServiceFacade、RuntimeSession 和 continuity 组织答案。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 应该触发",
+        "明确指出这是 host/service 场景而不是普通 Agent 任务",
+        "明确建议使用 RuntimeServiceFacade 和 RuntimeSession",
+        "不先把答案带向 provider SDK 或上游原生实现"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "我们下游已经有自己的 runtime boundary、task stream 和 approval API，我不想重写业务层，只想把内部 registry、descriptor 和 waiting-human 真相源收敛到 capability-runtime。外部协议不要动。",
+      "expected_output": "应触发 bf-caprt-dev，并把任务识别为 Legacy Convergence；明确提出内部收敛、外部 contract 不变。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 应该触发",
+        "明确判断该任务属于 Legacy Convergence",
+        "明确提出 descriptor 和 host summary 可优先收敛到 runtime public surface",
+        "明确提出不应擅自修改 task stream 或 approval API 等 outward-facing contract"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "请 review 一下我们现在的 capability-runtime 接入方式，看看哪些注册、host summary、approval/resume 逻辑已经可以直接用 Runtime 的 public surface 收敛，哪些还该留在下游边界里。",
+      "expected_output": "应触发 bf-caprt-dev，并把任务识别为 Legacy Convergence；优先建议 boundary 变薄和 public surface 收敛，而不是推动重写整个宿主层。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 应该触发",
+        "明确判断该任务属于 Legacy Convergence",
+        "优先建议使用 runtime public surface，而不是直接推动重写整个业务编排层",
+        "明确指出 host convergence 属于第二层能力，不应冲掉默认业务主路径"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "我需要一个 capability-runtime agent 以流式结构化输出返回逐步补全的 JSON 字段，下游会一边消费一边显示。请给我落地顺序和回归重点。",
+      "expected_output": "应触发 bf-caprt-dev；应把任务路由到 run_structured_stream 与 structured-output contract，而不是只讲 run_stream 文本流。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 应该触发",
+        "明确建议使用 Runtime.run_structured_stream",
+        "明确指出需要先 canonicalize 再做 completeness 或 degraded 判定",
+        "明确给出结构化流消费的回归重点"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "教我 Agently 的 TriggerFlow 原生怎么写并发和条件分支，我想直接了解它的底层工作流写法，不需要 capability-runtime 这一层。",
+      "expected_output": "不应触发 bf-caprt-dev；应识别为上游原生框架学习任务。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 不应该触发",
+        "明确指出这是学习上游原生框架而不是通过 capability-runtime 落业务"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "我只想优化一下 system prompt，让回答更像资深产品经理，不需要改 Runtime、测试、注册、NodeReport 或执行链路。",
+      "expected_output": "不应触发 bf-caprt-dev；应识别为 prompt-only / prompt engineering 任务。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 不应该触发",
+        "明确指出这更适合 prompt engineering 相关技能"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "我这次就想直接用 skills-runtime-sdk 的 Agent 和 overlay 来跑业务，不需要 capability-runtime 的 AgentSpec、WorkflowSpec 或 Runtime。请给我最短路径。",
+      "expected_output": "不应触发 bf-caprt-dev；应识别为直接使用上游执行真相源的任务，而不是 capability-runtime 落地任务。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 不应该触发",
+        "明确指出这不是通过 capability-runtime 落业务，而是直接使用上游执行层",
+        "在识别为反目标后，不继续给出上游最短路径实现细节",
+        "不猜测或编造上游 SDK 的 import、API 或伪代码"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "我只要直接接 provider SDK，把模型请求塞进业务流程，不需要 capability-runtime 这一层。你给我最短的实现方案。",
+      "expected_output": "不应触发 bf-caprt-dev；应识别为直接 provider 集成任务。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 不应该触发",
+        "明确指出这是 provider SDK 直连而不是 capability-runtime 任务",
+        "不继续顺着给 capability-runtime 之外的最短路径实现细节"
+      ]
+    }
+  ]
+}

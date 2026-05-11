@@ -139,6 +139,54 @@
         "明确指出这是 provider SDK 直连而不是 capability-runtime 任务",
         "不继续顺着给 capability-runtime 之外的最短路径实现细节"
       ]
+    },
+    {
+      "id": 13,
+      "prompt": "我要用 capability-runtime 做一个 chatbot，支持一轮上传多张图片，然后用 gpt-5.4 做 vision 对话。AI 访问不能直连 provider SDK，请给我落地方式。",
+      "expected_output": "应触发 bf-caprt-dev；应把任务路由到多模态 precomposed_messages，并保持 Runtime.run 作为 AI 访问入口。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 应该触发",
+        "明确建议使用 AgentSpec(prompt_render_mode=\"precomposed_messages\")",
+        "明确通过 _runtime_prompt.messages 的 text 与 image_url content parts 承载多图输入",
+        "明确业务执行必须经过 Runtime.run 或 Runtime.run_stream，而不是前端或业务层直连 provider SDK"
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "我想在 capability-runtime 里支持单个视频 vision 输入，是不是可以直接传 video content part 给模型？",
+      "expected_output": "应触发 bf-caprt-dev；应说明 v1 不支持 video part，建议 host/application 抽帧为多张 image_url 或先补显式 contract。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 应该触发",
+        "明确指出当前 v1 stable content parts 不支持 video part",
+        "明确建议在 host/application 层把视频抽成多张 image_url content parts，或等待/补充未来显式 Runtime contract",
+        "明确反对 provider-specific passthrough 或绕开 capability-runtime"
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "多模态 precomposed messages 里有 base64 图片，我希望 NodeReport 能审计但不能泄露原始图片、URL 或 prompt 明文。这个边界应该怎么做？",
+      "expected_output": "应触发 bf-caprt-dev；应强调 NodeReport.meta 只记录多模态摘要，不记录完整 messages、URL、base64 或 prompt 明文。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 应该触发",
+        "明确说明 NodeReport.meta 只记录 prompt_modalities、prompt_content_part_counts、prompt_media_count 等摘要",
+        "明确禁止记录完整 messages、URL、base64、媒体正文或 prompt 明文",
+        "明确仍通过 Runtime public surface 保留 evidence，而不是另建旁路审计"
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "用 capability-runtime 接一个 OpenAI-compatible endpoint 做 vision agent，后端可以配置 bridge，但业务入口必须是 Runtime。请告诉我如何避免误用 Agently 或 provider SDK 当业务入口。",
+      "expected_output": "应触发 bf-caprt-dev；应允许最小 bridge transport setup，但要求注册 AgentSpec 并通过 Runtime.run 执行业务。",
+      "files": [],
+      "assertions": [
+        "明确判断 bf-caprt-dev 应该触发",
+        "明确区分 bridge transport setup 与业务执行入口",
+        "明确要求通过 Runtime.register/Runtime.run 和 AgentSpec 落地",
+        "明确不应让业务 handler、前端或 worker 直接调用 Agently、skills-runtime-sdk Agent 或 provider SDK 完成 AI 访问"
+      ]
     }
   ]
 }

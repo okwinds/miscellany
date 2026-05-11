@@ -1,7 +1,7 @@
 ---
 name: bf-caprt-dev
-version: 0.1.0
-description: "指导编码智能体以 capability-runtime 为业务落地入口，交付基于 capability-runtime 的 skills / agents / workflows，并在 Greenfield 或 Legacy Convergence 场景下优先使用 Runtime public surface、structured output、NodeReport、host summary 与 service/session surfaces。只要任务目标是用 capability-runtime / capability_runtime 落地业务代码、收敛下游 runtime boundary，或涉及 Runtime.run / Runtime.run_stream / run_structured / run_structured_stream / AgentSpec / WorkflowSpec / NodeReport / RuntimeServiceFacade / describe_capability / summarize_host_run，就应优先使用本技能。不要用于普通通用编码、prompt-only 任务、直接学习上游原生框架 API，或任何明确要求“直接用 skills-runtime-sdk / Agently / provider SDK，不走 capability-runtime”的任务；若已触发但随后识别出这是反目标，必须立即退出，并停止提供任何上游实现细节、伪代码或 API 猜测。"
+version: 0.1.1
+description: "指导编码智能体以 capability-runtime 为业务落地入口，交付基于 capability-runtime 的 skills / agents / workflows，并在 Greenfield 或 Legacy Convergence 场景下优先使用 Runtime public surface、structured output、NodeReport、host summary 与 service/session surfaces。只要任务目标是用 capability-runtime / capability_runtime 落地业务代码、收敛下游 runtime boundary，或涉及 Runtime.run / Runtime.run_stream / run_structured / run_structured_stream / AgentSpec / PromptRenderMode / prompt_render_mode / _runtime_prompt / precomposed_messages / multimodal / vision / image input / 多图输入 / 视频抽帧输入 / OpenAI-compatible messages / image_url content parts / WorkflowSpec / NodeReport / RuntimeServiceFacade / describe_capability / summarize_host_run，就应优先使用本技能。不要用于普通通用编码、prompt-only 任务、直接学习上游原生框架 API，或任何明确要求“直接用 skills-runtime-sdk / Agently / provider SDK，不走 capability-runtime”的任务；若已触发但随后识别出这是反目标，必须立即退出，并停止提供任何上游实现细节、伪代码或 API 猜测。"
 compatibility: "技能事实库必须自包含：只允许引用当前技能目录内的 references/ 与 evals/。如需新增事实材料，先复制到技能目录再引用。执行 capability-runtime 相关开发时，需要 Python 3 与可导入的 capability_runtime 环境；默认可直接从 PyPI 安装 `capability-runtime`，本地源码开发或 monorepo 场景再使用 editable install / PYTHONPATH。目标仓库源码应位于本地工作区；真实 bridge 场景需要完整运行环境。"
 ---
 
@@ -140,6 +140,10 @@ python3 -c "from capability_runtime import Runtime, RuntimeConfig; print('caprt 
   - 组织多个 capability 的数据流与调用顺序
 - `Structured Output`
   - 重点是 `run_structured()` / `run_structured_stream()`
+- `Prompt Rendering`
+  - 重点是 `AgentSpec.prompt_render_mode` / `prompt_profile` 与 run-level `_runtime_prompt`
+- `Multimodal Prompt Boundary`
+  - 重点是 `precomposed_messages`、OpenAI-compatible content parts、vision 输入与 evidence 最小披露
 - `Host Convergence`
   - descriptor、host summary、approval/resume、service/session
 - `Bridge 接线`
@@ -151,11 +155,15 @@ python3 -c "from capability_runtime import Runtime, RuntimeConfig; print('caprt 
 
 不要一开始就跳到 bridge。
 
-## 三条红线
+## 关键红线与边界原则
 
 ### 1. 业务代码不得绕过 capability-runtime
 
 无论内部桥接依赖什么，业务主流程都不得直接调用底层上游框架来代替 `capability-runtime`。
+
+需要直出生成、低噪音 prompt 或预组装 provider messages 时，也仍然通过 `Runtime.run()` / `run_stream()`，使用 `AgentSpec.prompt_render_mode` 与 `_runtime_prompt` 控制输入形态。
+
+多模态不是绕过 `capability-runtime` 的理由。vision、图片、多图、视频抽帧等需求仍应先判断能否通过 `precomposed_messages` 进入 Runtime public surface，而不是把业务 handler、前端或 worker 改成 provider SDK 直连。
 
 ### 2. 不得把 Workflow 写成直接编排 Skill 节点
 
@@ -175,19 +183,75 @@ skill 是能力素材与能力来源，不是 Workflow 的对外原语。
 
 除非用户明确授权，否则不要改这些表面；先做内部真相源收敛。
 
-### 4. structured output 先 canonicalize，再 fallback
+### 4. runtime output envelope 先 normalize，再 validate
 
-当 structured output 出现“字段看起来缺失、但原始 payload 里似乎还有内容”时，先按下面顺序处理：
+当 structured output 出现“字段看起来缺失、但原始 payload 里似乎还有内容”时，先把它当成 **output envelope 不稳定** 处理，而不是立刻判定模型没给数据。
+
+典型 envelope 形态包括：
+
+- `output / result / payload / data` 这类单层或多层包裹
+- `text + structured payload` 并存
+- 前缀说明文字 + JSON / dict 正文
+- host / adapter / transport 附带元信息，再把真正结构化结果包在内部
+
+默认顺序：
 
 1. 对原始 payload 做无损扫描
-2. 识别等价字段和错误层级
-3. 先做 lossless canonicalize，恢复 canonical structured output
-4. 再做 coverage / completeness / degraded 判定
-5. 只有 canonicalize 后仍缺失，才允许 retry、fallback 或 estimated
+2. 先识别 envelope 层和宿主附带元信息
+3. 抽出最可能的 canonical structured candidate
+4. 对等价字段、错误层级、历史别名做 lossless normalize
+5. 再做 validate / coverage / completeness / degraded 判定
+6. 只有 normalize 后仍缺失，才允许 retry、fallback 或 estimated
 
 一句话原则：
 
-- 只要真数据还在 payload 里，就先救回真数据，不要抢先造估算值
+- **先把 output envelope 解开，再判断 contract 是否真的缺失。**
+
+### 5. 生成型 capability 仍以 Runtime 为入口
+
+当 capability 的核心价值来自 LLM 生成内容时，不要把“低噪音 prompt”误解为绕过 Runtime。可以由 host / composer / application 预组装最终 provider messages，但业务执行入口仍应通过 `Runtime.run()`、`run_stream()`、`run_structured()` 或 `run_structured_stream()`。
+
+通用要求：
+
+- `AgentSpec` 描述可执行 capability；skill 是能力素材，不是业务对外执行入口。
+- `_runtime_prompt` 或等价 run-level prompt override 是输入形态控制面，不是替代 Runtime 的外部执行框架。
+- prompt render trace 应用于审计与回放；不应泄露到模型可见正文，除非这是明确的业务输入。
+- skill / prompt asset 可以来自生态或上游，但进入生产 runtime 前应有可解析 contract 或结构化说明，避免业务代码只依赖一大段 prompt 文本。
+- 若下游需要最终 provider messages 取证，优先通过 Runtime host summary、NodeReport、run metadata 或业务 host trace 暴露，而不是绕到底层 provider client。
+
+数据面提醒：
+
+- Runtime 只保证能力执行与边界稳定，不自动保证生成内容质量。
+- 生成型 capability 应让业务层定义 output contract、field semantics、quality baseline、golden fixtures 或 semantic gates。
+- 不要把“structured output 可解析”误判为“用户价值达标”；用户可见内容、报告、脚本、建议、分析等仍需要领域质量验收。
+
+运行态提醒：
+
+- AgentSpec 注册、`prompt_profile` 设置或 `_runtime_prompt` 支持存在，只能证明代码路径具备能力，不自动证明部署环境已经启用。
+- 生成型 capability 上线前，应核对 effective deployment config：默认配置、部署清单 / compose / helm fallback、环境变量覆盖、运行中进程环境和必要的 scoped restart。
+- 如果宿主有 allowlist / feature flag / prompt mode 开关，分别确认 runtime 路由开关与 prompt composer 开关；不要用一个开关替代另一个开关的语义。
+- 真实 provider prompt capture 是生成型 runtime 接线的重要验收证据；没有 capture 时，只能说“代码具备路径”，不要说“模型已经吃到优化 prompt”。
+
+### 6. 多模态输入是 host-controlled prompt boundary，不是 provider passthrough 口子
+
+当任务涉及 vision、图片、多图、视频帧、OpenAI-compatible messages 或多模态 chatbot 时，默认路线是：
+
+1. 用 `AgentSpec(prompt_render_mode="precomposed_messages")` 描述可执行 capability；
+2. 由 host / application 在 `input["_runtime_prompt"]["messages"]` 提供最终 messages；
+3. 通过 `Runtime.run()` / `run_stream()` 执行，保留 Runtime events、WAL、NodeReport、host summary 与 output validation；
+4. 在 `NodeReport.meta` 只暴露安全摘要，不记录完整 prompt、messages、URL、base64 或媒体正文。
+
+当前 v1 稳定多模态输入只接受 `text` 与 `image_url` content parts。允许多张图片、image-only content list，以及把单个视频在 host / frontend / application 层抽成多张代表帧后作为多个 `image_url` parts 传入。
+
+不要把 `input_audio`、`file`、`video` 或 provider-specific content parts 当作可偷渡 passthrough；如果业务确实需要这些形态，先把它登记为新的显式 runtime contract，而不是绕开 `capability-runtime`。
+
+Runtime 在这条边界上只负责校验、canonicalize、转发与 evidence 摘要；它不负责下载、转码、OCR、ASR、视频解码、抽帧、文件托管或媒体持久化。多模态输出仍使用既有 artifact locator：`CapabilityResult.artifacts` / `NodeReport.artifacts`，不要新造平行 binary output 字段。
+
+### 7. usage metadata 是下游审计证据，不要在 host 边界丢失
+
+当 `NodeReport.usage` 或等价 host summary 暴露 `request_id`、`provider`、token 数、模型名等字段时，下游 runtime boundary 应无损透传这些字段。尤其是网关型 provider 场景里，gateway/carrier request id 与上游模型 provider request id 可能同时存在；不要把辅助 provider id 冒充成 carrier-owned canonical id，也不要因为结构化 output 已成功就丢掉 usage metadata。
+
+如果下游 billing、audit、cost reporting 或 replay 依赖 request id，要在 adapter / projector / worker 三层分别写回归测试：adapter 保留字段，projection 继续透传，最终 observation / audit store 能读取到该字段。
 
 ## 默认业务主路径
 
@@ -198,6 +262,7 @@ skill 是能力素材与能力来源，不是 Workflow 的对外原语。
 3. 判断当前更像 `skill / agent / workflow` 中的哪一种落地形态
 4. 如果 Agent 依赖 skills，准备 skills bundle / overlay / workspace
 5. 写 `AgentSpec` / `WorkflowSpec`
+   - 如果 host 已经有最终 prompt，先选 `prompt_render_mode`，不要把 prompt 包在普通业务 input 里
 6. `rt.register_many([...])` 后先 `rt.validate()`
 7. 优先用 `mock` 或 `sdk_native` 做离线回归
 8. 需要结构化结果时，优先用 `run_structured()` / `run_structured_stream()`
@@ -361,6 +426,21 @@ assert result.node_report is not None
 
 - `references/api-reference.md`
 
+## Prompt Rendering Strategy
+
+当 host 或应用层已经生成最终 prompt，不要把它塞进普通 `input` 让 Runtime 再包成 JSON。按目标选择 `structured_task` / `direct_task_text` / `precomposed_messages`。
+
+关键约束：
+- `_runtime_prompt` 是 Runtime 保留控制面，不是业务 input 字段
+- run-level `_runtime_prompt["mode"]` / `["profile"]` 可以覆盖 `AgentSpec`
+- `prompt_profile` 只使用 SDK 已支持的 profile：`default_agent` / `generation_direct` / `structured_transform`
+- `precomposed_messages` 必须仍走 Runtime 公共入口、events、WAL、NodeReport 和 output validation
+- `NodeReport.meta` 只记录 `prompt_render_mode`、`prompt_profile`、`prompt_hash`、message count/roles、composer version 等摘要，不记录完整 prompt 明文
+- 多模态 `precomposed_messages` 的 content 可包含 `text` 与 `image_url` parts；视频等非 v1 parts 先在 host 层转换或另立显式 contract，不要 provider-specific passthrough
+- 非法 messages / trace / profile 应 fail-fast 为 `INVALID_PROMPT_MESSAGES`
+
+细节读 `references/api-reference.md` 的 Prompt Rendering。
+
 ## 运行模式选择
 
 | 模式 | 用途 | 建议 |
@@ -393,6 +473,7 @@ assert result.node_report is not None
 - `run()` / `run_stream()` 终态符合预期
 - 需要结构化结果时优先走 `run_structured()` / `run_structured_stream()`
 - `NodeReport` 存在，关键判断不依赖自由文本
+- contract test 至少覆盖：理想 structured output、带 envelope 的 output、`text + structured payload` 混合形态
 
 ### Legacy Convergence
 
@@ -401,6 +482,28 @@ assert result.node_report is not None
 - approval / resume 的内部真相源是否统一
 - service/session 只在需要时进入
 - outward-facing contract 是否保持不变
+- bridge / host / adapter 的 envelope 差异是否已被 normalize，而不是在下游散落特判
+
+## Structured Output / Bridge Contract Test 补充
+
+只要任务涉及 `run_structured()`、`run_structured_stream()`、bridge、host summary 或真实传输接线，最小 contract test 不要只测一种“理想输出”。
+
+至少覆盖三类样本：
+
+1. **理想形态**
+   - 结构化对象直接满足 contract
+
+2. **envelope 形态**
+   - 结构化对象被 `output / result / payload` 之类包裹
+
+3. **混合文本形态**
+   - 有说明文字、summary 或 `text` 字段，同时附带机器可消费的 structured payload
+
+验收目标不是“所有输出都长得一模一样”，而是：
+
+- canonical consumer 能稳定拿到同一语义结果
+- normalize 逻辑是无损的
+- 下游判断不依赖某一种偶然的 envelope 长相
 
 ## Do / Don't
 

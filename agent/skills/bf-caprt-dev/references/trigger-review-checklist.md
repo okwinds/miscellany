@@ -4,7 +4,7 @@
 
 - 快速人工审看 `bf-caprt-dev` 的触发边界是否稳定
 - 判断它是否能正确区分 `Greenfield` 与 `Legacy Convergence`
-- 判断它是否能同时守住三元能力平衡、Runtime 入口优先、以及复杂任务路由
+- 判断它是否能同时守住三元能力平衡、Runtime 入口优先、多模态 prompt boundary、以及复杂任务路由
 
 使用方式：
 
@@ -14,8 +14,9 @@
    - 若触发，是否正确判断 `Greenfield` 或 `Legacy Convergence`
    - 是否保持 `skill / agent / workflow` 分工清楚
    - 是否把 `Runtime` 保持为业务入口，而不是把回答带向上游原生实现
+   - 多模态任务是否继续走 `precomposed_messages` + Runtime public surface，而不是 provider 直连
    - 复杂任务是否路由到正确的 host / service / structured / workflow 表面
-3. 若 10 条里有 2 条及以上判断明显错误，说明技能边界需要复审
+3. 若样例里有 2 条及以上判断明显错误，说明技能边界需要复审
 
 ## 应该触发
 
@@ -61,21 +62,45 @@
 请 review 一下我们现在的 capability-runtime 接入方式，看看哪些注册、host summary、approval/resume 逻辑已经可以直接用 Runtime 的 public surface 收敛，哪些还该留在下游边界里。
 ```
 
+### 8. Multimodal + multi-image vision
+
+```text
+我要用 capability-runtime 做一个 chatbot，支持一轮上传多张图片，然后用 gpt-5.4 做 vision 对话。AI 访问不能直连 provider SDK，请给我落地方式。
+```
+
+### 9. Multimodal + video boundary
+
+```text
+我想在 capability-runtime 里支持单个视频 vision 输入，是不是可以直接传 video content part 给模型？
+```
+
+### 10. Multimodal + evidence privacy
+
+```text
+多模态 precomposed messages 里有 base64 图片，我希望 NodeReport 能审计但不能泄露原始图片、URL 或 prompt 明文。这个边界应该怎么做？
+```
+
+### 11. Bridge transport but Runtime business entry
+
+```text
+用 capability-runtime 接一个 OpenAI-compatible endpoint 做 vision agent，后端可以配置 bridge，但业务入口必须是 Runtime。请告诉我如何避免误用 Agently 或 provider SDK 当业务入口。
+```
+
 ## 不该触发
 
-### 8. Upstream-native learning
+### 12. Upstream-native learning
 
 ```text
 教我 Agently 的 TriggerFlow 原生怎么写并发和条件分支，我想直接了解它的底层工作流写法，不需要 capability-runtime 这一层。
 ```
 
-### 9. Prompt-only optimization
+### 13. Prompt-only optimization
 
 ```text
 我只想优化一下 system prompt，让回答更像资深产品经理，不需要改 Runtime、测试、注册、NodeReport 或执行链路。
 ```
 
-### 10. Direct upstream execution
+### 14. Direct upstream execution
 
 ```text
 我这次就想直接用 skills-runtime-sdk 的 Agent 和 overlay 来跑业务，不需要 capability-runtime 的 AgentSpec、WorkflowSpec 或 Runtime。请给我最短路径。
